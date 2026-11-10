@@ -26,6 +26,10 @@ jobs:
         with:
           global-json-file: global.json
 
+      # Needed because the app disables WASM exception handling, which relinks the native runtime
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
+
       - name: Generate Unicode data
         working-directory: tools
         run: dotnet run UcdBuilder.cs
@@ -36,8 +40,12 @@ jobs:
       - name: Build tests
         run: dotnet build
 
-      - name: Install Playwright Chromium
-        run: pwsh tests/UnicodeExplorer.E2E/bin/Debug/net11.0/playwright.ps1 install --with-deps chromium
+      # Chromium for most E2E tests; Microsoft Edge for InterpreterModeTests (Edge's WebAssembly
+      # interpreter). Edge is usually preinstalled on GitHub's Ubuntu runners.
+      - name: Install Playwright browsers
+        run: |
+          pwsh tests/UnicodeExplorer.E2E/bin/Debug/net11.0/playwright.ps1 install --with-deps chromium
+          command -v microsoft-edge-stable || pwsh tests/UnicodeExplorer.E2E/bin/Debug/net11.0/playwright.ps1 install msedge
 
       # Unit tests and end-to-end tests. The E2E tests serve the publish output above under
       # /unicode-explorer/ (before the GitHub Pages rewrite below), so they test what gets deployed.

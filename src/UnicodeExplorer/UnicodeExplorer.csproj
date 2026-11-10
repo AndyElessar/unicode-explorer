@@ -6,6 +6,11 @@
     <StaticWebAssetSpaFallbackEnabled>true</StaticWebAssetSpaFallbackEnabled>
     <!-- No culture-specific formatting is needed; skipping ICU data reduces download size -->
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- .NET 11 builds use the final WebAssembly exception handling proposal (exnref), which older
+         browsers (e.g. Chrome/Edge < 137, Firefox < 131, Safari < 18.4) can't run: the app stops with
+         "This browser/engine doesn't support WASM exception handling". Use JS-based exceptions instead;
+         this also turns off WASM SIMD by default. Requires the wasm-tools workload (native relink). -->
+    <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
   </PropertyGroup>
 
   <ItemGroup>

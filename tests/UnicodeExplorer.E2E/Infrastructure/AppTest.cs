@@ -16,6 +16,11 @@ public abstract class AppTest : PageTest
 
     private readonly List<string> _consoleErrors = [];
 
+    protected AppTest() { }
+
+    /// <summary>For test classes that need a differently launched browser (e.g. extra command-line flags).</summary>
+    protected AppTest(BrowserTypeLaunchOptions launchOptions) : base(launchOptions) { }
+
     public override BrowserNewContextOptions ContextOptions(TestContext testContext) => new()
     {
         Locale = "en-US",

@@ -167,7 +167,7 @@ All `localStorage` access must tolerate failure (private browsing, blocked stora
 | Repeat load | ≤ 1.5 s using the browser cache |
 | Search performance | A single name search takes ≤ 100 ms (mid-range desktop CPU) |
 | Scrolling | Scrolling the largest block is smooth, with no noticeable jank |
-| Browsers | Latest two versions of Chrome, Edge, Firefox, and Safari (including iOS Safari) |
+| Browsers | Latest two versions of Chrome, Edge, Firefox, and Safari (including iOS Safari), including Edge with "Enhance your security on the web" enabled (JIT disabled) |
 | Responsive | Usable from 360 px wide phones to desktops, with no horizontal scrollbar |
 | Accessibility | Fully keyboard operable. Grid cells have an `aria-label` (e.g. "U+0041 LATIN CAPITAL LETTER A"). Color contrast meets WCAG AA |
 | Privacy | No tracking, analytics, or third-party CDNs. All resources load from the same origin |
@@ -287,6 +287,7 @@ dotnet new blazorwasm -o src/UnicodeExplorer --empty
 Key project settings (`.csproj`):
 
 - `<InvariantGlobalization>true</InvariantGlobalization>`: ICU culture data is not needed, which reduces download size.
+- `<WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>`: .NET 11 builds use the final WebAssembly exception handling proposal (exnref) by default. Engines without it, notably Edge's WebAssembly interpreter used by **"Enhance your security on the web"** (on by default for rarely visited sites), stop with "This browser/engine doesn't support WASM exception handling". JS-based exceptions avoid that; this also turns off WASM SIMD by default. It requires a native relink, so the `wasm-tools` workload must be installed (locally and in CI).
 - IL trimming is enabled by default on publish.
 
 ### 6.2 Directory Structure
@@ -400,9 +401,9 @@ public sealed record CharInfo(int CodePoint, string Name, string Category, Block
 
 1. `actions/checkout@v7`
 2. `actions/setup-dotnet@v6` (installs the exact prerelease SDK pinned in `global.json`)
-3. `dotnet run UcdBuilder.cs` in `tools/` (generate data; fails the build if validation fails)
+3. `dotnet workload install wasm-tools`, then `dotnet run UcdBuilder.cs` in `tools/` (generate data; fails the build if validation fails)
 4. `dotnet publish src/UnicodeExplorer -c Release -o publish`
-5. `dotnet build`, then `playwright.ps1 install --with-deps chromium` from the E2E project's output
+5. `dotnet build`, then `playwright.ps1 install --with-deps chromium` from the E2E project's output (plus `msedge` when Edge is not preinstalled)
 6. `dotnet test --no-build` with `E2E_SITE_DIR=publish/wwwroot`: unit tests, plus E2E tests against the exact files that will be deployed
 7. Post-process the publish output (see 7.2)
 8. `actions/upload-pages-artifact@v5` (path `publish/wwwroot`)
@@ -434,7 +435,7 @@ Repository setting: Settings → Pages → Source → **GitHub Actions**.
 
 - **Server:** `SiteServer` (shared per test session) hosts the **published** site in-process with Kestrel, the way GitHub Pages does: under `/unicode-explorer/`, with `<base href>` rewritten, and unknown paths answered by `index.html` with status 404. Each test gets a fresh browser context (1400×900, `en-US`, light color scheme, clipboard permissions), so `localStorage` starts empty.
 - **Site source:** when `E2E_SITE_DIR` is set (CI), that publish output is used. Otherwise the fixture runs `dotnet publish` to `<repo>/publish` first, so local runs always test the current code (incremental publish takes a few seconds).
-- **Coverage:** browsing and details, copy to clipboard, deep links (including the 404 status), previous/next, search (names, code points, pasted text, truncation, history), favorites, recently viewed, theme (forced and system), display font (including sanitizing custom names), categories, the phone layout, and regression tests for the virtualized grid (no runaway scrolling, the clicked character stays visible when the details panel opens, scroll reset when switching blocks). Every test also fails on unexpected browser console errors.
+- **Coverage:** the app running in Edge's WebAssembly interpreter (`InterpreterModeTests`, requires Microsoft Edge), browsing and details, copy to clipboard, deep links (including the 404 status), previous/next, search (names, code points, pasted text, truncation, history), favorites, recently viewed, theme (forced and system), display font (including sanitizing custom names), categories, the phone layout, and regression tests for the virtualized grid (no runaway scrolling, the clicked character stays visible when the details panel opens, scroll reset when switching blocks). Every test also fails on unexpected browser console errors.
 - **Run locally:**
 
   ```powershell
