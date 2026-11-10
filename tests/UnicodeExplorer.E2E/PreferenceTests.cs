@@ -39,24 +39,39 @@ public class PreferenceTests : AppTest
         await Expect(Page.Locator("h2", new() { HasText = "Recently viewed" })).ToHaveCountAsync(0);
     }
 
-    [Test]
-    public async Task Theme_can_be_forced_and_is_persisted()
-    {
-        await OpenAsync("block/arrows");
-        await Page.Locator("button[aria-label='Display settings']").ClickAsync();
-        await Page.Locator("#theme-select").SelectOptionAsync("dark");
+    private ILocator ThemeButton => Page.Locator(".theme-button");
+    private const string DarkBackground = "rgb(22, 24, 29)";
+    private const string LightBackground = "rgb(255, 255, 255)";
 
+    [Test]
+    public async Task Theme_button_cycles_system_light_dark_and_is_persisted()
+    {
+        // Use a dark system so that each step changes the colors
+        await Page.EmulateMediaAsync(new() { ColorScheme = ColorScheme.Dark });
+        await OpenAsync("block/arrows");
+        await Expect(ThemeButton).ToHaveAttributeAsync("data-theme-setting", "system");
+        await Expect(ThemeButton).ToHaveAttributeAsync("title", "Theme: System (switch to Light)");
+        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", DarkBackground);
+
+        await ThemeButton.ClickAsync();
+        await Expect(ThemeButton).ToHaveAttributeAsync("data-theme-setting", "light");
+        await Expect(Page.Locator("html")).ToHaveAttributeAsync("data-theme", "light");
+        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", LightBackground);
+
+        await ThemeButton.ClickAsync();
+        await Expect(ThemeButton).ToHaveAttributeAsync("data-theme-setting", "dark");
         await Expect(Page.Locator("html")).ToHaveAttributeAsync("data-theme", "dark");
-        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", "rgb(22, 24, 29)");
 
         await Page.ReloadAsync();
-        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", "rgb(22, 24, 29)");
+        await Expect(ThemeButton).ToHaveAttributeAsync("data-theme-setting", "dark");
+        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", DarkBackground);
 
-        // Back to "System": the test browser uses a light color scheme
-        await Page.Locator("button[aria-label='Display settings']").ClickAsync();
-        await Page.Locator("#theme-select").SelectOptionAsync("system");
-        await Expect(Page.Locator("html")).Not.ToHaveAttributeAsync("data-theme", "dark");
-        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", "rgb(255, 255, 255)");
+        // Back to System, which follows the system color scheme again
+        await ThemeButton.ClickAsync();
+        await Expect(ThemeButton).ToHaveAttributeAsync("data-theme-setting", "system");
+        await Assert.That(await Page.EvaluateAsync<bool>("document.documentElement.hasAttribute('data-theme')")).IsFalse();
+        await Page.EmulateMediaAsync(new() { ColorScheme = ColorScheme.Light });
+        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", LightBackground);
     }
 
     [Test]
@@ -64,7 +79,16 @@ public class PreferenceTests : AppTest
     {
         await Page.EmulateMediaAsync(new() { ColorScheme = ColorScheme.Dark });
         await OpenAsync();
-        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", "rgb(22, 24, 29)");
+        await Expect(Page.Locator("body")).ToHaveCSSAsync("background-color", DarkBackground);
+    }
+
+    [Test]
+    public async Task Theme_button_is_in_the_top_right_corner()
+    {
+        await OpenAsync();
+        var box = (await ThemeButton.BoundingBoxAsync())!;
+        await Assert.That(box.X + box.Width).IsGreaterThan(DesktopWidth - 40);
+        await Assert.That(box.Y).IsLessThan(20);
     }
 
     [Test]

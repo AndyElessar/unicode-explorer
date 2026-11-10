@@ -17,7 +17,7 @@
 }
 
 /* Dark tokens: used when the system is dark (unless the user forced light), or when the user forced dark.
-   data-theme is set on <html> by js/interop.js from the display settings. */
+   data-theme is set on <html> by js/interop.js from the theme button in the header. */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
         --bg: #16181d;
@@ -128,6 +128,18 @@ button:hover { border-color: var(--accent); }
 
 .icon-button { min-width: 34px; height: 34px; padding: 0 8px; }
 .menu-button { display: none; }
+
+/* Theme button: the icon (monitor, sun, or moon) shows the current setting */
+.theme-button { display: inline-flex; align-items: center; justify-content: center; }
+.theme-button svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
 
 .app-body {
     display: grid;

@@ -11,6 +11,16 @@
          "This browser/engine doesn't support WASM exception handling". Use JS-based exceptions instead;
          this also turns off WASM SIMD by default. Requires the wasm-tools workload (native relink). -->
     <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
+    <!-- Compile .NET code to WebAssembly on publish (build and the dev server are unaffected).
+         Edge's enhanced security mode runs WebAssembly in an interpreter, and the .NET IL interpreter
+         running inside it was very slow: startup went from about 11 s to 5.5 s. The download roughly
+         doubles (about 2 MB to 4.3 MB brotli) and publishing takes a few minutes longer. -->
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <!-- With AOT, the jiterpreter generates small wasm modules for calls from interpreted to AOT code.
+         It decides whether to use wasm exception handling from the browser's support, not from the
+         app's build, so with WasmEnableExceptionHandling=false they fail to compile ("jit_call code
+         generation failed: ... Invalid tag index"). Make them use JS-based exceptions as well. -->
+    <BlazorWebAssemblyRuntimeOptions>--no-jiterpreter-wasm-eh-enabled</BlazorWebAssemblyRuntimeOptions>
   </PropertyGroup>
 
   <ItemGroup>

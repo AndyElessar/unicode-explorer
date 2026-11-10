@@ -3,6 +3,20 @@ namespace UnicodeExplorer.E2E;
 public class BrowseTests : AppTest
 {
     [Test]
+    public async Task Site_icons_load_on_deep_links()
+    {
+        // Relative icon URLs must resolve against <base href>, also on pages served through the 404 fallback
+        await OpenAsync("char/0041");
+        var hrefs = await Page.Locator("link[rel=icon]").EvaluateAllAsync<string[]>("links => links.map(l => l.href)");
+        await Assert.That(hrefs).IsEquivalentTo([Server.Url("icon.svg"), Server.Url("icon-192.png")]);
+        foreach (var href in hrefs)
+        {
+            var response = await Page.APIRequest.GetAsync(href);
+            await Assert.That(response.Status).IsEqualTo(200);
+        }
+    }
+
+    [Test]
     public async Task Home_page_lists_blocks_and_categories()
     {
         await OpenAsync();

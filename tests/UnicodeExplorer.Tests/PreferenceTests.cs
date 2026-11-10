@@ -41,6 +41,24 @@ public class CodePointListTests
     }
 }
 
+public class ThemeRulesTests
+{
+    [Test]
+    [Arguments("system", "light")]
+    [Arguments("light", "dark")]
+    [Arguments("dark", "system")]
+    [Arguments("unknown", "system")]
+    public async Task Next_cycles_system_light_dark(string theme, string expected) =>
+        await Assert.That(ThemeRules.Next(theme)).IsEqualTo(expected);
+
+    [Test]
+    [Arguments("system", "System")]
+    [Arguments("light", "Light")]
+    [Arguments("dark", "Dark")]
+    public async Task Label(string theme, string expected) =>
+        await Assert.That(ThemeRules.Label(theme)).IsEqualTo(expected);
+}
+
 public class CategoryTests
 {
     private readonly UnicodeDatabase _db = TestData.SampleDb();

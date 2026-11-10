@@ -154,7 +154,7 @@ Block slug rule: lowercase the name, replace non-alphanumeric characters with `-
 |---|---|---|
 | P1 | Recently viewed characters (max 50, most recent first, stored in `localStorage`). A character is recorded when its details are shown. Listed on the home page with a "Clear" button | P1 |
 | P2 | Favorites (stored in `localStorage`), toggled with the ☆/★ button in the detail view and listed on the home page | P1 |
-| P3 | Dark mode: follows the system by default (`prefers-color-scheme`); the display settings panel offers System / Light / Dark | P1 |
+| P3 | Dark mode: follows the system by default (`prefers-color-scheme`); an icon button in the top-right corner of the header cycles System → Light → Dark; its icon shows the current setting (monitor, sun, moon), and the choice is stored | P1 |
 
 All `localStorage` access must tolerate failure (private browsing, blocked storage). The app must work normally without it, falling back to defaults.
 
@@ -288,6 +288,7 @@ Key project settings (`.csproj`):
 
 - `<InvariantGlobalization>true</InvariantGlobalization>`: ICU culture data is not needed, which reduces download size.
 - `<WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>`: .NET 11 builds use the final WebAssembly exception handling proposal (exnref) by default. Engines without it, notably Edge's WebAssembly interpreter used by **"Enhance your security on the web"** (on by default for rarely visited sites), stop with "This browser/engine doesn't support WASM exception handling". JS-based exceptions avoid that; this also turns off WASM SIMD by default. It requires a native relink, so the `wasm-tools` workload must be installed (locally and in CI).
+- `<RunAOTCompilation>true</RunAOTCompilation>`: .NET code is compiled to WebAssembly on publish (not on build). In Edge's WebAssembly interpreter the .NET IL interpreter ran inside another interpreter, and startup took about 11 s; with AOT it takes about 5.5 s (measured locally with `--jitless --wasm-jitless`). With the JIT available startup is about the same. The download grows from about 2 MB to 4.3 MB (brotli), and publishing takes a few minutes longer. Also requires the `wasm-tools` workload.
 - IL trimming is enabled by default on publish.
 
 ### 6.2 Directory Structure
@@ -315,6 +316,7 @@ unicode-explorer/
 │        ├─ data/             # unicode.txt (generated, not committed), LICENSE-UNICODE.txt
 │        ├─ js/interop.js
 │        ├─ css/app.css
+│        ├─ icon.svg          # site icon ("U+" in a character cell); icon-192.png is rendered from it
 │        └─ index.html
 ├─ tests/
 │  ├─ UnicodeExplorer.Tests/  # Unit tests (TUnit)
@@ -374,7 +376,7 @@ public sealed record CharInfo(int CodePoint, string Name, string Category, Block
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  Unicode Explorer     [ 🔍 Search name / U+… / char ]  [Aa]│
+│  Unicode Explorer   [ 🔍 Search name / U+… / char ] [Aa][☾]│
 ├──────────────┬─────────────────────────┬─────────────────┤
 │ Blocks       │  Basic Latin            │  A              │
 │ [filter…]    │  U+0000 – U+007F        │  LATIN CAPITAL  │
@@ -387,7 +389,7 @@ public sealed record CharInfo(int CodePoint, string Name, string Category, Block
 └──────────────────────────────────────────────────────────┘
 ```
 
-`[Aa]` is the display settings button (F-FONT).
+`[Aa]` is the display settings button (F-FONT); `[☾]` is the theme button, cycling System / Light / Dark (P3).
 
 - Desktop (≥ 1024 px): three columns — block list / character grid / details.
 - Tablet (640–1023 px): the block list collapses into a drawer; details are a floating right-side panel.
@@ -435,7 +437,7 @@ Repository setting: Settings → Pages → Source → **GitHub Actions**.
 
 - **Server:** `SiteServer` (shared per test session) hosts the **published** site in-process with Kestrel, the way GitHub Pages does: under `/unicode-explorer/`, with `<base href>` rewritten, and unknown paths answered by `index.html` with status 404. Each test gets a fresh browser context (1400×900, `en-US`, light color scheme, clipboard permissions), so `localStorage` starts empty.
 - **Site source:** when `E2E_SITE_DIR` is set (CI), that publish output is used. Otherwise the fixture runs `dotnet publish` to `<repo>/publish` first, so local runs always test the current code (incremental publish takes a few seconds).
-- **Coverage:** the app running in Edge's WebAssembly interpreter (`InterpreterModeTests`, requires Microsoft Edge; skipped where that mode can't be reproduced, which includes Edge on GitHub's Linux runners, so it is only verified on Windows), browsing and details, copy to clipboard, deep links (including the 404 status), previous/next, search (names, code points, pasted text, truncation, history), favorites, recently viewed, theme (forced and system), display font (including sanitizing custom names), categories, the phone layout, and regression tests for the virtualized grid (no runaway scrolling, the clicked character stays visible when the details panel opens, scroll reset when switching blocks). Every test also fails on unexpected browser console errors.
+- **Coverage:** the app running in Edge's WebAssembly interpreter (`InterpreterModeTests`, requires Microsoft Edge; skipped where that mode can't be reproduced, which includes Edge on GitHub's Linux runners, so it is only verified on Windows), browsing and details, copy to clipboard, deep links (including the 404 status), previous/next, search (names, code points, pasted text, truncation, history), favorites, recently viewed, theme (button cycling System / Light / Dark, persisted, following the system), display font (including sanitizing custom names), categories, the phone layout, and regression tests for the virtualized grid (no runaway scrolling, the clicked character stays visible when the details panel opens, scroll reset when switching blocks). Every test also fails on unexpected browser console errors.
 - **Run locally:**
 
   ```powershell

@@ -8,7 +8,9 @@
     <title>Unicode Explorer</title>
     <base href="/" />
     <link rel="preload" id="webassembly" />
-    <link rel="icon" type="image/png" href="icon-192.png" />
+    <!-- icon-192.png is rendered from icon.svg, for browsers without SVG favicons (e.g. Safari) -->
+    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
     <link rel="stylesheet" href="css/app.css" />
     <script src="js/interop.js"></script>
     <script type="importmap"></script>

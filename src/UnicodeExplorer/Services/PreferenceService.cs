@@ -58,6 +58,9 @@ public sealed class PreferenceService
         Save(FavoritesKey, _favorites);
     }
 
+    /// <summary>Cycles System → Light → Dark → System.</summary>
+    public void CycleTheme() => SetTheme(ThemeRules.Next(Theme));
+
     public void SetTheme(string theme)
     {
         Theme = Themes.Contains(theme) ? theme : "system";
@@ -93,6 +96,23 @@ public sealed class PreferenceService
         }
         catch (JSException) { }
     }
+}
+
+public static class ThemeRules
+{
+    /// <summary>The theme after <paramref name="theme"/> in the order of <see cref="PreferenceService.Themes"/>; unknown values start over.</summary>
+    public static string Next(string theme)
+    {
+        var themes = PreferenceService.Themes;
+        return themes[(Array.IndexOf(themes, theme) + 1) % themes.Length];
+    }
+
+    public static string Label(string theme) => theme switch
+    {
+        "light" => "Light",
+        "dark" => "Dark",
+        _ => "System",
+    };
 }
 
 /// <summary>Pure helpers for code point lists stored as comma-separated hex, e.g. "1F600,41".</summary>

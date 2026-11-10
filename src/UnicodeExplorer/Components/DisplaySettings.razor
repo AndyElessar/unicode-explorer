@@ -1,18 +1,10 @@
 @inject FontService Fonts
-@inject PreferenceService Prefs
 
 <section class="settings-panel" aria-label="Display settings">
     <div class="settings-header">
         <h2>Display settings</h2>
         <button class="icon-button" aria-label="Close display settings" @onclick="OnClose">✕</button>
     </div>
-
-    <label for="theme-select">Theme</label>
-    <select id="theme-select" value="@Prefs.Theme" @onchange="OnThemeChange">
-        <option value="system">System</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-    </select>
 
     <label for="font-select">Character font</label>
     <select id="font-select" value="@SelectValue" @onchange="OnSelect">
@@ -70,8 +62,6 @@
         _custom = value == CustomValue;
         if (!_custom) await Apply(value);
     }
-
-    private void OnThemeChange(ChangeEventArgs e) => Prefs.SetTheme(e.Value?.ToString() ?? "system");
 
     private Task ApplyCustom() => Apply(_customName);
 

@@ -10,7 +10,7 @@ A browser tool for browsing and searching Unicode characters. It runs entirely o
 - Search by name, code point (`U+1F600`, `0x1F600`, `1F600`), or pasted characters
 - Character details: properties, encodings, and escape sequences, each with a copy button
 - Shareable URLs for every block, category, character, and search
-- Favorites, recently viewed, theme (System / Light / Dark), and a selectable display font, stored in `localStorage`
+- Favorites, recently viewed, a theme button cycling System / Light / Dark, and a selectable display font, stored in `localStorage`
 - Unicode 18.0.0 data
 
 ## Tech Stack
@@ -46,14 +46,14 @@ dotnet run --project src/UnicodeExplorer                  # dev server (deep lin
 dotnet test                                               # unit + E2E tests
 dotnet test --project tests/UnicodeExplorer.Tests         # unit tests only
 
-# The app relinks the native WebAssembly runtime, which needs this workload:
+# The app relinks the native WebAssembly runtime and is AOT-compiled on publish, which needs this workload:
 dotnet workload install wasm-tools
 
 # E2E tests need Chromium once, and Microsoft Edge for InterpreterModeTests:
 pwsh tests/UnicodeExplorer.E2E/bin/Debug/net11.0/playwright.ps1 install chromium
 ```
 
-E2E tests publish the app to `publish/` before running, unless `E2E_SITE_DIR` points to an existing publish output (CI does this). Set `HEADED=1` to watch the browser.
+E2E tests publish the app to `publish/` before running (AOT makes this take a few minutes), unless `E2E_SITE_DIR` points to an existing publish output (CI does this). Set `HEADED=1` to watch the browser.
 
 ## Tests
 
@@ -76,6 +76,7 @@ E2E tests publish the app to `publish/` before running, unless `E2E_SITE_DIR` po
 
 - **Virtualized grid (`CharGrid`)**: rows are chunked by the current column count, which changes when the details panel opens. The grid re-scrolls to keep the selected character in view.
 - **WebAssembly exception handling is disabled on purpose** (`WasmEnableExceptionHandling=false`). .NET 11 defaults to the final EH proposal (exnref), which Edge's WebAssembly interpreter ("Enhance your security on the web", JIT off) doesn't support, so the app wouldn't start there. `InterpreterModeTests` covers this (it only runs for real on Edge for Windows and is skipped on the Linux CI runner); run it locally if you change runtime build settings.
+- **AOT compilation (`RunAOTCompilation`) only applies to `dotnet publish`.** The dev server and `dotnet build` still run on the IL interpreter, so measure startup performance against a publish output. AOT roughly halves startup in Edge's WebAssembly interpreter (see `docs/SPEC.md` 6.1).
 - **Do not set `overflow-anchor: none`** on scroll containers. .NET 11's `Virtualize` relies on native scroll anchoring.
 - **.NET 11 RC3 bug**: calling `Virtualize.ScrollToItemAsync(0)` while the list is already at the top renders only placeholders. `CharGrid` resets `scrollTop` through JS for row 0 instead. Re-check this after moving to the GA release.
 - `/block/{slug}` and `/char/{hex}` share one page component (`Browse`), so the grid keeps its scroll position when moving between characters. A component that serves two routes must clear the parameter that the new route does not supply (see `SetParametersAsync` in `Browse.razor`).
