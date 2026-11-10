@@ -75,7 +75,7 @@ E2E tests publish the app to `publish/` before running, unless `E2E_SITE_DIR` po
 ## Known Pitfalls
 
 - **Virtualized grid (`CharGrid`)**: rows are chunked by the current column count, which changes when the details panel opens. The grid re-scrolls to keep the selected character in view.
-- **WebAssembly exception handling is disabled on purpose** (`WasmEnableExceptionHandling=false`). .NET 11 defaults to the final EH proposal (exnref), which Edge's WebAssembly interpreter ("Enhance your security on the web", JIT off) doesn't support, so the app wouldn't start there. `InterpreterModeTests` covers this; keep it passing if you change runtime build settings.
+- **WebAssembly exception handling is disabled on purpose** (`WasmEnableExceptionHandling=false`). .NET 11 defaults to the final EH proposal (exnref), which Edge's WebAssembly interpreter ("Enhance your security on the web", JIT off) doesn't support, so the app wouldn't start there. `InterpreterModeTests` covers this (it only runs for real on Edge for Windows and is skipped on the Linux CI runner); run it locally if you change runtime build settings.
 - **Do not set `overflow-anchor: none`** on scroll containers. .NET 11's `Virtualize` relies on native scroll anchoring.
 - **.NET 11 RC3 bug**: calling `Virtualize.ScrollToItemAsync(0)` while the list is already at the top renders only placeholders. `CharGrid` resets `scrollTop` through JS for row 0 instead. Re-check this after moving to the GA release.
 - `/block/{slug}` and `/char/{hex}` share one page component (`Browse`), so the grid keeps its scroll position when moving between characters. A component that serves two routes must clear the parameter that the new route does not supply (see `SetParametersAsync` in `Browse.razor`).
