@@ -6,11 +6,21 @@
     <StaticWebAssetSpaFallbackEnabled>true</StaticWebAssetSpaFallbackEnabled>
     <!-- No culture-specific formatting is needed; skipping ICU data reduces download size -->
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Trim framework features the app doesn't use (no time zones, tracing, or metrics).
+         Together they cut the download by about 0.8 MB (gzip, 12%); see docs/SPEC.md 6.1. -->
+    <InvariantTimezone>true</InvariantTimezone>
+    <EventSourceSupport>false</EventSourceSupport>
+    <MetricsSupport>false</MetricsSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <!-- .NET 11 builds use the final WebAssembly exception handling proposal (exnref), which older
          browsers (e.g. Chrome/Edge < 137, Firefox < 131, Safari < 18.4) can't run: the app stops with
-         "This browser/engine doesn't support WASM exception handling". Use JS-based exceptions instead;
-         this also turns off WASM SIMD by default. Requires the wasm-tools workload (native relink). -->
+         "This browser/engine doesn't support WASM exception handling". Use JS-based exceptions instead.
+         Requires the wasm-tools workload (native relink). -->
     <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
+    <!-- Turning off exception handling also turns off SIMD by default. Edge's WebAssembly interpreter
+         supports SIMD (only exnref is missing), and with AOT it cuts startup there from about 5.9 s to
+         5.2 s, for about 0.3 MB more download (brotli). -->
+    <WasmEnableSIMD>true</WasmEnableSIMD>
     <!-- Compile .NET code to WebAssembly on publish (build and the dev server are unaffected).
          Edge's enhanced security mode runs WebAssembly in an interpreter, and the .NET IL interpreter
          running inside it was very slow: startup went from about 11 s to 5.5 s. The download roughly
