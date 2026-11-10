@@ -110,7 +110,7 @@ The user can choose which font is used to render **characters** (grid cells, sea
 
 | ID | Requirement | Priority |
 |---|---|---|
-| F1 | A "Display settings" panel opened from a button in the header | P0 |
+| F1 | A "Display settings" panel opened from a button in the header; it closes with its ✕ button, the header button, or a click anywhere outside the panel (a transparent backdrop catches that click, so it doesn't also act on what is under it) | P0 |
 | F2 | Font options: **System default** (the default), the generic families `serif`, `sans-serif`, `monospace`, and a curated list of commonly installed fonts (see below) | P0 |
 | F3 | A free-text field for entering any installed font family name (e.g. `Noto Sans Symbols 2`) | P0 |
 | F4 | Changes apply immediately (live preview), via the CSS custom property `--glyph-font` | P0 |

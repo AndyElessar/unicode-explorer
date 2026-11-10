@@ -36,6 +36,8 @@
 
     @if (_settingsOpen)
     {
+        @* Transparent layer under the panel: a click anywhere else closes it *@
+        <div class="settings-backdrop" @onclick="() => _settingsOpen = false"></div>
         <DisplaySettings OnClose="() => _settingsOpen = false" />
     }
 

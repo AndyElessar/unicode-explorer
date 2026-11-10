@@ -105,6 +105,32 @@ public class PreferenceTests : AppTest
     }
 
     [Test]
+    public async Task Display_settings_close_when_clicking_elsewhere()
+    {
+        await OpenAsync("block/arrows");
+        var settingsButton = Page.Locator("button[aria-label='Display settings']");
+        var panel = Page.Locator(".settings-panel");
+
+        // Clicks inside the panel keep it open
+        await settingsButton.ClickAsync();
+        await panel.Locator("h2").ClickAsync();
+        await Page.Locator("#font-select").SelectOptionAsync("serif");
+        await Expect(panel).ToBeVisibleAsync();
+
+        // A click anywhere else (here: the character grid) closes it
+        await Page.Mouse.ClickAsync(400, 500);
+        await Expect(panel).ToHaveCountAsync(0);
+        await Expect(settingsButton).ToHaveAttributeAsync("aria-expanded", "false");
+
+        // The settings button still toggles the panel closed
+        await settingsButton.ClickAsync();
+        await Expect(panel).ToBeVisibleAsync();
+        var box = (await settingsButton.BoundingBoxAsync())!;
+        await Page.Mouse.ClickAsync(box.X + box.Width / 2, box.Y + box.Height / 2);
+        await Expect(panel).ToHaveCountAsync(0);
+    }
+
+    [Test]
     public async Task Custom_font_names_are_sanitized()
     {
         await OpenAsync();

@@ -377,6 +377,9 @@ dl.props dd {
     box-shadow: var(--shadow);
 }
 
+/* Covers the page (including the header buttons) while the panel is open; see MainLayout */
+.settings-backdrop { position: fixed; inset: 0; z-index: 29; }
+
 .settings-header { display: flex; align-items: center; justify-content: space-between; }
 .settings-header h2 { margin: 0; }
 .settings-panel label { font-size: 0.85rem; color: var(--muted); }
