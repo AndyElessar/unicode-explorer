@@ -30,7 +30,8 @@ A browser tool for browsing and searching Unicode characters. It runs entirely o
 | `data/source/` | Raw UCD 18.0.0 files and WHATWG `entities.json` (committed) |
 | `tests/UnicodeExplorer.Tests/` | Unit tests (TUnit) |
 | `tests/UnicodeExplorer.E2E/` | End-to-end tests (TUnit + Playwright) against the published site |
-| `.github/workflows/deploy.yml` | Build, test, and deploy to GitHub Pages |
+| `.github/workflows/deploy.yml` | Build and test on pushes and pull requests; deploy to GitHub Pages from `main` |
+| `.github/dependabot.yml` | Weekly updates for GitHub Actions, NuGet packages, and the SDK in `global.json` |
 
 ## Commands
 

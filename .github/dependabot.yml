@@ -1,0 +1,29 @@
+# Weekly dependency updates. Every pull request is built and tested (unit + E2E) by
+# .github/workflows/deploy.yml before it can be merged; nothing is deployed from a PR.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  # Versions live in Directory.Packages.props (central package management)
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # AspNetCoreVersion must match the SDK in global.json (see the dotnet-sdk entry below)
+      aspnetcore:
+        patterns: ["Microsoft.AspNetCore.*"]
+      tunit:
+        patterns: ["TUnit*"]
+
+  # The SDK pinned in global.json
+  - package-ecosystem: dotnet-sdk
+    directory: /
+    schedule:
+      interval: weekly

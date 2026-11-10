@@ -396,17 +396,19 @@ public sealed record CharInfo(int CodePoint, string Name, string Category, Block
 
 ### 7.1 GitHub Actions Workflow
 
-`.github/workflows/deploy.yml`, triggered on push to `main`:
+`.github/workflows/deploy.yml` runs on pushes to `main`, on pull requests, and manually (`workflow_dispatch`). Pull requests run the build and all tests but skip steps 7–9, so dependency updates are verified before they are merged. The workflow token is read-only; only the deploy job gets `pages: write` and `id-token: write`.
 
-1. `actions/checkout`
+1. `actions/checkout@v7`
 2. `actions/setup-dotnet@v6` (installs the exact prerelease SDK pinned in `global.json`)
 3. `dotnet run UcdBuilder.cs` in `tools/` (generate data; fails the build if validation fails)
 4. `dotnet publish src/UnicodeExplorer -c Release -o publish`
 5. `dotnet build`, then `playwright.ps1 install --with-deps chromium` from the E2E project's output
 6. `dotnet test --no-build` with `E2E_SITE_DIR=publish/wwwroot`: unit tests, plus E2E tests against the exact files that will be deployed
 7. Post-process the publish output (see 7.2)
-8. `actions/upload-pages-artifact` (path `publish/wwwroot`)
-9. `actions/deploy-pages`
+8. `actions/upload-pages-artifact@v5` (path `publish/wwwroot`)
+9. `actions/deploy-pages@v5`
+
+Dependabot (`.github/dependabot.yml`) opens weekly pull requests for GitHub Actions, NuGet packages (grouped: `Microsoft.AspNetCore.*`, `TUnit*`), and the SDK in `global.json`. `AspNetCoreVersion` must match the SDK, so an SDK update and the matching package update may need to be merged together. CI on the pull request shows whether a mismatch breaks the build.
 
 Repository setting: Settings → Pages → Source → **GitHub Actions**.
 
@@ -415,7 +417,7 @@ Repository setting: Settings → Pages → Source → **GitHub Actions**.
 | Issue | Solution |
 |---|---|
 | The site lives under the sub-path `/unicode-explorer/` | After publishing, change `<base href="/" />` in `index.html` to `<base href="/unicode-explorer/" />`. Local development keeps `/` |
-| Jekyll ignores folders starting with an underscore, such as `_framework` | Add an empty `.nojekyll` file to the publish root |
+| Jekyll ignores folders starting with an underscore, such as `_framework` | Not an issue: Pages deployed from GitHub Actions are not processed by Jekyll, so no `.nojekyll` file is needed. (`upload-pages-artifact` v4+ also drops dotfiles from the artifact.) |
 | Opening a deep link directly (e.g. `/char/1F600`) returns 404 | Copy `index.html` to `404.html` so the Blazor router takes over (the HTTP status is still 404, but the page works) |
 | GitHub Pages does not serve precompressed `.br` files | Rely on GitHub Pages' automatic gzip for the MVP. If first load exceeds the budget, evaluate Blazor's official Brotli decoding loader |
 

@@ -1,24 +1,25 @@
-name: Deploy to GitHub Pages
+name: Build, test, and deploy
 
 on:
   push:
     branches: [main]
+  # Pull requests (including Dependabot's) are built and tested, but not deployed
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Superseded PR runs are cancelled; deployments on main always finish
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Installs the exact SDK pinned in global.json (prerelease versions are never rolled forward)
       - uses: actions/setup-dotnet@v6
@@ -45,7 +46,9 @@ jobs:
         env:
           E2E_SITE_DIR: ${{ github.workspace }}/publish/wwwroot
 
+      # Pages deployed from GitHub Actions are not processed by Jekyll, so no .nojekyll file is needed
       - name: Prepare for GitHub Pages
+        if: github.event_name != 'pull_request'
         working-directory: publish/wwwroot
         run: |
           # The site is served from https://<user>.github.io/unicode-explorer/
@@ -53,19 +56,22 @@ jobs:
           grep -q '<base href="/unicode-explorer/" />' index.html
           # Let the Blazor router handle deep links such as /char/1F600
           cp index.html 404.html
-          # Serve folders that start with "_" (e.g. _framework)
-          touch .nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request'
         with:
           path: publish/wwwroot
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
