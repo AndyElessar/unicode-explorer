@@ -1,0 +1,93 @@
+@page "/search"
+@inject UnicodeDatabase Db
+@inject SearchService Searcher
+@inject NavigationManager Nav
+
+<PageTitle>@(string.IsNullOrWhiteSpace(Query) ? "Search" : $"“{Query}”") · Unicode Explorer</PageTitle>
+
+<div class="browse">
+    <section class="browse-main">
+        <div class="page-header">
+            <h1>Search</h1>
+            @if (_result.CodePoints.Count > 0)
+            {
+                <span class="page-meta">
+                    @(_result.Truncated ? "Too many results, please refine your search. Showing the first " : "")@_result.CodePoints.Count.ToString("N0") results
+                </span>
+            }
+        </div>
+
+        @if (string.IsNullOrWhiteSpace(Query))
+        {
+            <div class="page"><SearchHelp /></div>
+        }
+        else if (_result.CodePoints.Count == 0)
+        {
+            <div class="page"><p>No characters match “@Query”.</p></div>
+        }
+        else
+        {
+            <div class="result-scroll">
+                <Virtualize Items="_result.CodePoints" ItemSize="52" Context="cp">
+                    @{
+                        var info = Db.GetChar(cp)!;
+                        var display = CharDisplay.For(info);
+                        var text = EncodingFormatter.ToText(cp);
+                    }
+                    <div class="result-row @(cp == _selected?.CodePoint ? "selected" : "")">
+                        <a class="result-link" href="@SearchUrl(cp)">
+                            <span class="result-glyph glyph @(display.IsLabel ? "label" : "")">@display.Text</span>
+                            <span class="result-code">@info.Label</span>
+                            <span class="result-name">@info.Name</span>
+                        </a>
+                        @if (text != null)
+                        {
+                            <CopyButton Text="@text" Description="@info.Label" />
+                        }
+                    </div>
+                </Virtualize>
+            </div>
+        }
+    </section>
+
+    @if (_selected != null)
+    {
+        <CharDetail Char="_selected" OnClose="CloseDetail" />
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "q")] public string? Query { get; set; }
+    [SupplyParameterFromQuery(Name = "c")] public string? SelectedHex { get; set; }
+
+    private string? _lastQuery;
+    private SearchResult _result = SearchResult.Empty;
+    private CharInfo? _selected;
+
+    protected override void OnParametersSet()
+    {
+        if (Query != _lastQuery)
+        {
+            _lastQuery = Query;
+            _result = Searcher.Search(Query);
+        }
+
+        // "c" selects a result; without it, a direct lookup ("U+1F600" or a pasted character) opens its details.
+        // An empty "c" means the user closed the details.
+        if (SelectedHex == null)
+            _selected = _result.CodePoints.Count > 0 && IsDirectLookup(Query!) ? Db.GetChar(_result.CodePoints[0]) : null;
+        else
+            _selected = SearchService.TryParseCodePoint("U+" + SelectedHex, out var cp) ? Db.GetChar(cp) : null;
+    }
+
+    private static bool IsDirectLookup(string query)
+    {
+        var q = query.Trim();
+        return SearchService.TryParseCodePoint(q, out _)
+               || (q.EnumerateRunes().Count() == 1 && !(q.Length == 1 && char.IsAsciiLetterOrDigit(q[0])));
+    }
+
+    private string SearchUrl(int cp) => $"search?q={Uri.EscapeDataString(Query ?? "")}&c={cp:X4}";
+
+    private void CloseDetail() => Nav.NavigateTo($"search?q={Uri.EscapeDataString(Query ?? "")}&c=");
+}

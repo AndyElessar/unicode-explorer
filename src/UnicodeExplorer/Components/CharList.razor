@@ -1,0 +1,18 @@
+@inject UnicodeDatabase Db
+
+@* A short, non-virtualized list of characters, e.g. recently viewed or favorites *@
+<div class="char-list">
+    @foreach (var cp in CodePoints)
+    {
+        if (Db.GetChar(cp) is not { } info) continue;
+        var display = CharDisplay.For(info);
+        <a href="char/@info.Hex" class="cell" aria-label="@info.Label @info.Name" title="@info.Label @info.Name">
+            <span class="glyph @(display.IsLabel ? "label" : "")">@display.Text</span>
+            <span class="cell-code">@info.Hex</span>
+        </a>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<int> CodePoints { get; set; } = [];
+}

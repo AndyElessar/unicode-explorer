@@ -1,0 +1,63 @@
+@implements IDisposable
+@inject NavigationManager Nav
+
+<form class="search-box" role="search" @onsubmit="SearchNow">
+    <input type="search" placeholder="Search name, U+…, or paste a character" aria-label="Search characters"
+           autocomplete="off" spellcheck="false"
+           @bind="_query" @bind:event="oninput" @bind:after="SearchDebounced" />
+</form>
+
+@code {
+    private string _query = "";
+    private CancellationTokenSource? _debounce;
+
+    protected override void OnInitialized()
+    {
+        SyncFromUrl();
+        Nav.LocationChanged += OnLocationChanged;
+    }
+
+    private async Task SearchDebounced()
+    {
+        _debounce?.Cancel();
+        _debounce = new CancellationTokenSource();
+        try
+        {
+            await Task.Delay(200, _debounce.Token);
+        }
+        catch (TaskCanceledException)
+        {
+            return;
+        }
+        SearchNow();
+    }
+
+    private void SearchNow()
+    {
+        _debounce?.Cancel();
+        var url = _query.Trim().Length == 0 ? "search" : $"search?q={Uri.EscapeDataString(_query)}";
+        // The first search adds a history entry; refining it while typing replaces that entry.
+        Nav.NavigateTo(url, replace: IsOnSearchPage());
+    }
+
+    private bool IsOnSearchPage() => Nav.ToBaseRelativePath(Nav.Uri).StartsWith("search");
+
+    private void SyncFromUrl()
+    {
+        if (!IsOnSearchPage()) return;
+        var query = System.Web.HttpUtility.ParseQueryString(new Uri(Nav.Uri).Query)["q"] ?? "";
+        if (query.Trim() != _query.Trim()) _query = query;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        SyncFromUrl();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        Nav.LocationChanged -= OnLocationChanged;
+        _debounce?.Cancel();
+    }
+}

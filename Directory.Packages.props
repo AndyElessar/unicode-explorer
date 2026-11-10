@@ -1,0 +1,17 @@
+<Project>
+
+  <!-- Central package management: versions live here, projects reference packages without a version -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- .NET 11 release candidate; must match the SDK pinned in global.json -->
+    <AspNetCoreVersion>11.0.0-rc.3.26522.148</AspNetCoreVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Gateway" Version="$(AspNetCoreVersion)" />
+    <PackageVersion Include="TUnit" Version="1.81.16" />
+    <PackageVersion Include="TUnit.Playwright" Version="1.81.16" />
+  </ItemGroup>
+
+</Project>

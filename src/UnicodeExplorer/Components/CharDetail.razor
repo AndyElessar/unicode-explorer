@@ -1,0 +1,126 @@
+@inject UnicodeDatabase Db
+@inject PreferenceService Prefs
+
+<aside class="detail" aria-label="Character details">
+    <div class="detail-toolbar">
+        @if (ShowNavigation)
+        {
+            var prev = Db.Step(Char.CodePoint, -1);
+            var next = Db.Step(Char.CodePoint, +1);
+            @if (prev is { } p)
+            {
+                <a class="nav-link" href="char/@p.ToString("X4")" title="Previous character">← U+@p.ToString("X4")</a>
+            }
+            @if (next is { } n)
+            {
+                <a class="nav-link" href="char/@n.ToString("X4")" title="Next character">U+@n.ToString("X4") →</a>
+            }
+        }
+        @if (Char.IsAssigned)
+        {
+            var favorite = Prefs.IsFavorite(Char.CodePoint);
+            <button class="icon-button favorite-button @(favorite ? "on" : "")" aria-pressed="@(favorite ? "true" : "false")"
+                    title="@(favorite ? "Remove from favorites" : "Add to favorites")" aria-label="Favorite"
+                    @onclick="() => Prefs.ToggleFavorite(Char.CodePoint)">@(favorite ? "★" : "☆")</button>
+        }
+        <button class="icon-button close-button" aria-label="Close details" @onclick="OnClose">✕</button>
+    </div>
+
+    <div class="detail-glyph glyph @(_display.IsLabel ? "label" : "")">@_display.Text</div>
+    @if (_text != null)
+    {
+        <div class="detail-copy">
+            <CopyButton Text="@_text" Description="@Char.Label" />
+        </div>
+    }
+    <h1 class="detail-name">@Char.Name</h1>
+
+    <dl class="props">
+        @Row("Code point", Char.Label)
+        <dt>General Category</dt>
+        <dd>
+            @if (GeneralCategories.IsBrowsable(Char.Category))
+            {
+                <a href="category/@Char.Category">@GeneralCategories.Describe(Char.Category)</a>
+            }
+            else
+            {
+                @GeneralCategories.Describe(Char.Category)
+            }
+        </dd>
+        @if (Char.Block != null)
+        {
+            <dt>Block</dt>
+            <dd><a href="block/@Char.Block.Slug">@Char.Block.Name</a></dd>
+        }
+        @Row("Script", Char.Script, copy: false)
+        @if (Char.Aliases.Length > 0)
+        {
+            @Row("Aliases", string.Join(", ", Char.Aliases), copy: false)
+        }
+        @CaseRow("Uppercase", Char.Upper)
+        @CaseRow("Lowercase", Char.Lower)
+        @CaseRow("Titlecase", Char.Title ?? Char.Upper)
+    </dl>
+
+    @if (_text != null)
+    {
+        <h2>Encodings</h2>
+        <dl class="props">
+            @Row("UTF-8", EncodingFormatter.Utf8(Char.CodePoint))
+            @Row("UTF-16", EncodingFormatter.Utf16(Char.CodePoint))
+            @Row("Decimal", Char.CodePoint.ToString())
+            @Row("HTML", EncodingFormatter.HtmlHex(Char.CodePoint))
+            @foreach (var entity in Char.Entities)
+            {
+                @Row("HTML named", $"&{entity};")
+            }
+            @Row("CSS", EncodingFormatter.Css(Char.CodePoint))
+            @Row("JavaScript", EncodingFormatter.JavaScript(Char.CodePoint))
+            @Row("JSON / UTF-16", EncodingFormatter.Utf16Escape(Char.CodePoint))
+            @Row("C#", EncodingFormatter.CSharp(Char.CodePoint))
+            @Row("URL", EncodingFormatter.Url(Char.CodePoint))
+        </dl>
+    }
+    else
+    {
+        <p class="hint">Surrogate code points are not characters and cannot be encoded on their own.</p>
+    }
+</aside>
+
+@code {
+    [Parameter, EditorRequired] public CharInfo Char { get; set; } = default!;
+
+    /// <summary>Shows previous / next character links.</summary>
+    [Parameter] public bool ShowNavigation { get; set; }
+
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private CharDisplay _display;
+    private string? _text;
+
+    protected override void OnParametersSet()
+    {
+        _display = CharDisplay.For(Char);
+        _text = EncodingFormatter.ToText(Char.CodePoint);
+        if (Char.IsAssigned) Prefs.AddRecent(Char.CodePoint);
+    }
+
+    private RenderFragment Row(string label, string value, bool copy = true) =>
+        @<text>
+            <dt>@label</dt>
+            <dd>
+                <code>@value</code>
+                @if (copy)
+                {
+                    <CopyButton Text="@value" Description="@($"{label} {value}")" />
+                }
+            </dd>
+        </text>;
+
+    private RenderFragment CaseRow(string label, int? cp) => cp is not { } value ? @<text></text> :
+        @<text>
+            <dt>@label</dt>
+            <dd><a href="char/@value.ToString("X4")">@EncodingFormatter.ToText(value) U+@value.ToString("X4")</a></dd>
+        </text>;
+}

@@ -1,0 +1,84 @@
+@inject FontService Fonts
+@inject PreferenceService Prefs
+
+<section class="settings-panel" aria-label="Display settings">
+    <div class="settings-header">
+        <h2>Display settings</h2>
+        <button class="icon-button" aria-label="Close display settings" @onclick="OnClose">✕</button>
+    </div>
+
+    <label for="theme-select">Theme</label>
+    <select id="theme-select" value="@Prefs.Theme" @onchange="OnThemeChange">
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+
+    <label for="font-select">Character font</label>
+    <select id="font-select" value="@SelectValue" @onchange="OnSelect">
+        <option value="">System default</option>
+        @foreach (var (group, fonts) in FontService.Presets)
+        {
+            <optgroup label="@group">
+                @foreach (var font in fonts)
+                {
+                    <option value="@font">@font</option>
+                }
+            </optgroup>
+        }
+        <option value="@CustomValue">Custom…</option>
+    </select>
+
+    @if (_custom)
+    {
+        <label for="font-custom">Font family name</label>
+        <form class="font-custom" @onsubmit="ApplyCustom">
+            <input id="font-custom" type="text" placeholder="e.g. Noto Sans Symbols 2" maxlength="@FontName.MaxLength"
+                   @bind="_customName" />
+            <button type="submit">Apply</button>
+        </form>
+    }
+
+    <p class="font-preview glyph" aria-hidden="true">A ä Ω ж ש ع अ 中 한 ∑ ⇒ ♞ 😀</p>
+    <p class="hint">
+        Only installed fonts can be used. If the selected font has no glyph for a character,
+        the browser shows it with another font instead.
+    </p>
+</section>
+
+@code {
+    private const string CustomValue = "\u0001custom";
+
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private string _font = "";
+    private bool _custom;
+    private string _customName = "";
+
+    private string SelectValue => _custom ? CustomValue : _font;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _font = await Fonts.GetAsync();
+        _custom = _font.Length > 0 && !FontService.Presets.Any(p => p.Fonts.Contains(_font));
+        _customName = _font;
+    }
+
+    private async Task OnSelect(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString() ?? "";
+        _custom = value == CustomValue;
+        if (!_custom) await Apply(value);
+    }
+
+    private void OnThemeChange(ChangeEventArgs e) => Prefs.SetTheme(e.Value?.ToString() ?? "system");
+
+    private Task ApplyCustom() => Apply(_customName);
+
+    private async Task Apply(string name)
+    {
+        _font = FontName.Sanitize(name);
+        _customName = _font;
+        await Fonts.SetAsync(_font);
+    }
+}

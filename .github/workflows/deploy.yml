@@ -1,0 +1,71 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs the exact SDK pinned in global.json (prerelease versions are never rolled forward)
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Generate Unicode data
+        working-directory: tools
+        run: dotnet run UcdBuilder.cs
+
+      - name: Publish
+        run: dotnet publish src/UnicodeExplorer -c Release -o publish
+
+      - name: Build tests
+        run: dotnet build
+
+      - name: Install Playwright Chromium
+        run: pwsh tests/UnicodeExplorer.E2E/bin/Debug/net11.0/playwright.ps1 install --with-deps chromium
+
+      # Unit tests and end-to-end tests. The E2E tests serve the publish output above under
+      # /unicode-explorer/ (before the GitHub Pages rewrite below), so they test what gets deployed.
+      - name: Test
+        run: dotnet test --no-build
+        env:
+          E2E_SITE_DIR: ${{ github.workspace }}/publish/wwwroot
+
+      - name: Prepare for GitHub Pages
+        working-directory: publish/wwwroot
+        run: |
+          # The site is served from https://<user>.github.io/unicode-explorer/
+          sed -i 's|<base href="/" />|<base href="/unicode-explorer/" />|' index.html
+          grep -q '<base href="/unicode-explorer/" />' index.html
+          # Let the Blazor router handle deep links such as /char/1F600
+          cp index.html 404.html
+          # Serve folders that start with "_" (e.g. _framework)
+          touch .nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: publish/wwwroot
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

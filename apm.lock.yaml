@@ -1,0 +1,712 @@
+lockfile_version: '1'
+apm_version: 0.35.0
+dependencies:
+- repo_url: dotnet/skills
+  name: dotnet-blazor
+  host: github.com
+  resolved_commit: 96c3d68dad2855e3ab5178aa1a262789d86a1466
+  version: 0.1.3
+  virtual_path: plugins/dotnet-blazor
+  is_virtual: true
+  package_type: skill_bundle
+  deployed_files:
+  - .agents/skills/author-component
+  - .agents/skills/author-component/SKILL.md
+  - .agents/skills/author-component/references/async-programming-rules.md
+  - .agents/skills/author-component/references/breaking-down-components.md
+  - .agents/skills/author-component/references/component-disposal.md
+  - .agents/skills/collect-user-input
+  - .agents/skills/collect-user-input/SKILL.md
+  - .agents/skills/configure-auth
+  - .agents/skills/configure-auth/SKILL.md
+  - .agents/skills/coordinate-components
+  - .agents/skills/coordinate-components/SKILL.md
+  - .agents/skills/create-blazor-project
+  - .agents/skills/create-blazor-project/SKILL.md
+  - .agents/skills/create-blazor-project/assets/agents-md/auto-global.md
+  - .agents/skills/create-blazor-project/assets/agents-md/auto-per-page.md
+  - .agents/skills/create-blazor-project/assets/agents-md/server-global.md
+  - .agents/skills/create-blazor-project/assets/agents-md/server-per-page.md
+  - .agents/skills/create-blazor-project/assets/agents-md/ssr-none.md
+  - .agents/skills/create-blazor-project/assets/agents-md/webassembly-global.md
+  - .agents/skills/create-blazor-project/assets/agents-md/webassembly-per-page.md
+  - .agents/skills/fetch-and-send-data
+  - .agents/skills/fetch-and-send-data/SKILL.md
+  - .agents/skills/plan-ui-change
+  - .agents/skills/plan-ui-change/SKILL.md
+  - .agents/skills/support-prerendering
+  - .agents/skills/support-prerendering/SKILL.md
+  - .agents/skills/use-igniteui-blazor
+  - .agents/skills/use-igniteui-blazor/SKILL.md
+  - .agents/skills/use-js-interop
+  - .agents/skills/use-js-interop/SKILL.md
+  - .claude/skills/author-component
+  - .claude/skills/author-component/SKILL.md
+  - .claude/skills/author-component/references/async-programming-rules.md
+  - .claude/skills/author-component/references/breaking-down-components.md
+  - .claude/skills/author-component/references/component-disposal.md
+  - .claude/skills/collect-user-input
+  - .claude/skills/collect-user-input/SKILL.md
+  - .claude/skills/configure-auth
+  - .claude/skills/configure-auth/SKILL.md
+  - .claude/skills/coordinate-components
+  - .claude/skills/coordinate-components/SKILL.md
+  - .claude/skills/create-blazor-project
+  - .claude/skills/create-blazor-project/SKILL.md
+  - .claude/skills/create-blazor-project/assets/agents-md/auto-global.md
+  - .claude/skills/create-blazor-project/assets/agents-md/auto-per-page.md
+  - .claude/skills/create-blazor-project/assets/agents-md/server-global.md
+  - .claude/skills/create-blazor-project/assets/agents-md/server-per-page.md
+  - .claude/skills/create-blazor-project/assets/agents-md/ssr-none.md
+  - .claude/skills/create-blazor-project/assets/agents-md/webassembly-global.md
+  - .claude/skills/create-blazor-project/assets/agents-md/webassembly-per-page.md
+  - .claude/skills/fetch-and-send-data
+  - .claude/skills/fetch-and-send-data/SKILL.md
+  - .claude/skills/plan-ui-change
+  - .claude/skills/plan-ui-change/SKILL.md
+  - .claude/skills/support-prerendering
+  - .claude/skills/support-prerendering/SKILL.md
+  - .claude/skills/use-igniteui-blazor
+  - .claude/skills/use-igniteui-blazor/SKILL.md
+  - .claude/skills/use-js-interop
+  - .claude/skills/use-js-interop/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/author-component/SKILL.md: sha256:dd019cae755aac5064ff75cfd6ed6a4a098ab3c9c36c6817432ce70c61ffd279
+    .agents/skills/author-component/references/async-programming-rules.md: sha256:ff44a0dead2daddc2f14bc1711bf62f9ac921f1c57e83e7512666b4bdc53b494
+    .agents/skills/author-component/references/breaking-down-components.md: sha256:08c9cfcce60da259b07670138b05c684236699900b3a442c44be04ce32f15d00
+    .agents/skills/author-component/references/component-disposal.md: sha256:191aa94246826e2849910cafa23346834a05e1be049e68eb6ac0e39198deeeed
+    .agents/skills/collect-user-input/SKILL.md: sha256:49d22948cea0ac6f1c1ac8bb29b7e3a912900217336b001e2bd83183eabeb239
+    .agents/skills/configure-auth/SKILL.md: sha256:3163cf33820d5f8e00d3dc96b0c9a3ee2e69d55c9be95897353b769f4a81d837
+    .agents/skills/coordinate-components/SKILL.md: sha256:38d12bcb9340c7229fee1dbf0e57583444c297e30d84af98897969b71642b924
+    .agents/skills/create-blazor-project/SKILL.md: sha256:5157cd17070468aa1c3e9244f98a3a2a991b50ef0dbdd074387eb61e13c5e813
+    .agents/skills/create-blazor-project/assets/agents-md/auto-global.md: sha256:0767969f371da69f994dfe02c4c7756435dcac273c91727a1df3ae9d5d546660
+    .agents/skills/create-blazor-project/assets/agents-md/auto-per-page.md: sha256:360d9b8f229e772a2407a4d8a13f43baa5b3b1501f909bf0fa6262a27b923aa5
+    .agents/skills/create-blazor-project/assets/agents-md/server-global.md: sha256:49c42bd24d5eefa3ecad0ec9dca72893cc63b0a6ebfc536a47725ce7b15d7196
+    .agents/skills/create-blazor-project/assets/agents-md/server-per-page.md: sha256:7863984526ec98627ef8d8c25a4df6b55622c649a11543f76352c0882cabcf05
+    .agents/skills/create-blazor-project/assets/agents-md/ssr-none.md: sha256:757ccb7acaa4a5d5050f0eb508e6921f48e7e43324b5689796a8874321a00749
+    .agents/skills/create-blazor-project/assets/agents-md/webassembly-global.md: sha256:a0cbc3e9d170f19ae9b539a2c30f501a23cc6911bbf8d4d769f335eb091233a9
+    .agents/skills/create-blazor-project/assets/agents-md/webassembly-per-page.md: sha256:5ef5ec779a208299d5b49b7e96cb70e49a829c31937a5ca6e846f48b98b9a076
+    .agents/skills/fetch-and-send-data/SKILL.md: sha256:7af26f6f75d8f9521c9d54240f18a75d8bf5dad8d659041aeaf930b9bc42d98f
+    .agents/skills/plan-ui-change/SKILL.md: sha256:21e45de7424af23e26f710eea6209767c0ad5302cc53d1b7c926fa3baa5df3c4
+    .agents/skills/support-prerendering/SKILL.md: sha256:ba0f2ed0908b1dc6fe30d04600ffd88d79bd2e693f58103fb9bd6b66126024ed
+    .agents/skills/use-igniteui-blazor/SKILL.md: sha256:9af7a55eb7b16ba96fdf15cefefbbe394b349f290ded502206f6376e102295a7
+    .agents/skills/use-js-interop/SKILL.md: sha256:6bf1227510ef49d3a3cc30bf7a15c6c300b0df25a964aec66a8012a4f1d113c5
+    .claude/skills/author-component/SKILL.md: sha256:dd019cae755aac5064ff75cfd6ed6a4a098ab3c9c36c6817432ce70c61ffd279
+    .claude/skills/author-component/references/async-programming-rules.md: sha256:ff44a0dead2daddc2f14bc1711bf62f9ac921f1c57e83e7512666b4bdc53b494
+    .claude/skills/author-component/references/breaking-down-components.md: sha256:08c9cfcce60da259b07670138b05c684236699900b3a442c44be04ce32f15d00
+    .claude/skills/author-component/references/component-disposal.md: sha256:191aa94246826e2849910cafa23346834a05e1be049e68eb6ac0e39198deeeed
+    .claude/skills/collect-user-input/SKILL.md: sha256:49d22948cea0ac6f1c1ac8bb29b7e3a912900217336b001e2bd83183eabeb239
+    .claude/skills/configure-auth/SKILL.md: sha256:3163cf33820d5f8e00d3dc96b0c9a3ee2e69d55c9be95897353b769f4a81d837
+    .claude/skills/coordinate-components/SKILL.md: sha256:38d12bcb9340c7229fee1dbf0e57583444c297e30d84af98897969b71642b924
+    .claude/skills/create-blazor-project/SKILL.md: sha256:5157cd17070468aa1c3e9244f98a3a2a991b50ef0dbdd074387eb61e13c5e813
+    .claude/skills/create-blazor-project/assets/agents-md/auto-global.md: sha256:0767969f371da69f994dfe02c4c7756435dcac273c91727a1df3ae9d5d546660
+    .claude/skills/create-blazor-project/assets/agents-md/auto-per-page.md: sha256:360d9b8f229e772a2407a4d8a13f43baa5b3b1501f909bf0fa6262a27b923aa5
+    .claude/skills/create-blazor-project/assets/agents-md/server-global.md: sha256:49c42bd24d5eefa3ecad0ec9dca72893cc63b0a6ebfc536a47725ce7b15d7196
+    .claude/skills/create-blazor-project/assets/agents-md/server-per-page.md: sha256:7863984526ec98627ef8d8c25a4df6b55622c649a11543f76352c0882cabcf05
+    .claude/skills/create-blazor-project/assets/agents-md/ssr-none.md: sha256:757ccb7acaa4a5d5050f0eb508e6921f48e7e43324b5689796a8874321a00749
+    .claude/skills/create-blazor-project/assets/agents-md/webassembly-global.md: sha256:a0cbc3e9d170f19ae9b539a2c30f501a23cc6911bbf8d4d769f335eb091233a9
+    .claude/skills/create-blazor-project/assets/agents-md/webassembly-per-page.md: sha256:5ef5ec779a208299d5b49b7e96cb70e49a829c31937a5ca6e846f48b98b9a076
+    .claude/skills/fetch-and-send-data/SKILL.md: sha256:7af26f6f75d8f9521c9d54240f18a75d8bf5dad8d659041aeaf930b9bc42d98f
+    .claude/skills/plan-ui-change/SKILL.md: sha256:21e45de7424af23e26f710eea6209767c0ad5302cc53d1b7c926fa3baa5df3c4
+    .claude/skills/support-prerendering/SKILL.md: sha256:ba0f2ed0908b1dc6fe30d04600ffd88d79bd2e693f58103fb9bd6b66126024ed
+    .claude/skills/use-igniteui-blazor/SKILL.md: sha256:9af7a55eb7b16ba96fdf15cefefbbe394b349f290ded502206f6376e102295a7
+    .claude/skills/use-js-interop/SKILL.md: sha256:6bf1227510ef49d3a3cc30bf7a15c6c300b0df25a964aec66a8012a4f1d113c5
+  content_hash: sha256:17546519ce263f9610a53f91771e437fd30d1c2dcf3e72e9113ba61b1d964a5c
+  discovered_via: dotnet-agent-skills
+  marketplace_plugin_name: dotnet-blazor
+- repo_url: thomhurst/tunit
+  materialization_repo_url: thomhurst/TUnit
+  name: tunit
+  host: github.com
+  resolved_commit: 2abdd8ef5fe1f0acb491ebfd45eda71b69585e50
+  resolved_ref: v1.81.16
+  version: unknown
+  virtual_path: skills/tunit
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/tunit
+  - .agents/skills/tunit/SKILL.md
+  - .claude/skills/tunit
+  - .claude/skills/tunit/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/tunit/SKILL.md: sha256:ef9bda6f2e4bf459e9f40fa7b7bb0e233e59308cae064f3d181a8c9c6d0b615d
+    .claude/skills/tunit/SKILL.md: sha256:ef9bda6f2e4bf459e9f40fa7b7bb0e233e59308cae064f3d181a8c9c6d0b615d
+  content_hash: sha256:a71435220a068a82ed83c49c301291be19ddcc48a170fee6c0e66bdb8d7c1279
+deployments:
+- kind: project-relative
+  target: claude
+  value: .claude/skills/author-component
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/author-component/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:dd019cae755aac5064ff75cfd6ed6a4a098ab3c9c36c6817432ce70c61ffd279
+- kind: project-relative
+  target: claude
+  value: .claude/skills/author-component/references/async-programming-rules.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:ff44a0dead2daddc2f14bc1711bf62f9ac921f1c57e83e7512666b4bdc53b494
+- kind: project-relative
+  target: claude
+  value: .claude/skills/author-component/references/breaking-down-components.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:08c9cfcce60da259b07670138b05c684236699900b3a442c44be04ce32f15d00
+- kind: project-relative
+  target: claude
+  value: .claude/skills/author-component/references/component-disposal.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:191aa94246826e2849910cafa23346834a05e1be049e68eb6ac0e39198deeeed
+- kind: project-relative
+  target: claude
+  value: .claude/skills/collect-user-input
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/collect-user-input/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:49d22948cea0ac6f1c1ac8bb29b7e3a912900217336b001e2bd83183eabeb239
+- kind: project-relative
+  target: claude
+  value: .claude/skills/configure-auth
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/configure-auth/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:3163cf33820d5f8e00d3dc96b0c9a3ee2e69d55c9be95897353b769f4a81d837
+- kind: project-relative
+  target: claude
+  value: .claude/skills/coordinate-components
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/coordinate-components/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:38d12bcb9340c7229fee1dbf0e57583444c297e30d84af98897969b71642b924
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:5157cd17070468aa1c3e9244f98a3a2a991b50ef0dbdd074387eb61e13c5e813
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/assets/agents-md/auto-global.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:0767969f371da69f994dfe02c4c7756435dcac273c91727a1df3ae9d5d546660
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/assets/agents-md/auto-per-page.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:360d9b8f229e772a2407a4d8a13f43baa5b3b1501f909bf0fa6262a27b923aa5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/assets/agents-md/server-global.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:49c42bd24d5eefa3ecad0ec9dca72893cc63b0a6ebfc536a47725ce7b15d7196
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/assets/agents-md/server-per-page.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:7863984526ec98627ef8d8c25a4df6b55622c649a11543f76352c0882cabcf05
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/assets/agents-md/ssr-none.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:757ccb7acaa4a5d5050f0eb508e6921f48e7e43324b5689796a8874321a00749
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/assets/agents-md/webassembly-global.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:a0cbc3e9d170f19ae9b539a2c30f501a23cc6911bbf8d4d769f335eb091233a9
+- kind: project-relative
+  target: claude
+  value: .claude/skills/create-blazor-project/assets/agents-md/webassembly-per-page.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:5ef5ec779a208299d5b49b7e96cb70e49a829c31937a5ca6e846f48b98b9a076
+- kind: project-relative
+  target: claude
+  value: .claude/skills/fetch-and-send-data
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/fetch-and-send-data/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:7af26f6f75d8f9521c9d54240f18a75d8bf5dad8d659041aeaf930b9bc42d98f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/plan-ui-change
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/plan-ui-change/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:21e45de7424af23e26f710eea6209767c0ad5302cc53d1b7c926fa3baa5df3c4
+- kind: project-relative
+  target: claude
+  value: .claude/skills/support-prerendering
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/support-prerendering/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:ba0f2ed0908b1dc6fe30d04600ffd88d79bd2e693f58103fb9bd6b66126024ed
+- kind: project-relative
+  target: claude
+  value: .claude/skills/tunit
+  runtime: null
+  scope: project
+  owners:
+  - thomhurst/tunit/skills/tunit
+  active_owner: thomhurst/tunit/skills/tunit
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/tunit/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - thomhurst/tunit/skills/tunit
+  active_owner: thomhurst/tunit/skills/tunit
+  content_hash: sha256:ef9bda6f2e4bf459e9f40fa7b7bb0e233e59308cae064f3d181a8c9c6d0b615d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/use-igniteui-blazor
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/use-igniteui-blazor/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:9af7a55eb7b16ba96fdf15cefefbbe394b349f290ded502206f6376e102295a7
+- kind: project-relative
+  target: claude
+  value: .claude/skills/use-js-interop
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/use-js-interop/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:6bf1227510ef49d3a3cc30bf7a15c6c300b0df25a964aec66a8012a4f1d113c5
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/author-component
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/author-component/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:dd019cae755aac5064ff75cfd6ed6a4a098ab3c9c36c6817432ce70c61ffd279
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/author-component/references/async-programming-rules.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:ff44a0dead2daddc2f14bc1711bf62f9ac921f1c57e83e7512666b4bdc53b494
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/author-component/references/breaking-down-components.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:08c9cfcce60da259b07670138b05c684236699900b3a442c44be04ce32f15d00
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/author-component/references/component-disposal.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:191aa94246826e2849910cafa23346834a05e1be049e68eb6ac0e39198deeeed
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/collect-user-input
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/collect-user-input/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:49d22948cea0ac6f1c1ac8bb29b7e3a912900217336b001e2bd83183eabeb239
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/configure-auth
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/configure-auth/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:3163cf33820d5f8e00d3dc96b0c9a3ee2e69d55c9be95897353b769f4a81d837
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/coordinate-components
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/coordinate-components/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:38d12bcb9340c7229fee1dbf0e57583444c297e30d84af98897969b71642b924
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:5157cd17070468aa1c3e9244f98a3a2a991b50ef0dbdd074387eb61e13c5e813
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/assets/agents-md/auto-global.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:0767969f371da69f994dfe02c4c7756435dcac273c91727a1df3ae9d5d546660
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/assets/agents-md/auto-per-page.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:360d9b8f229e772a2407a4d8a13f43baa5b3b1501f909bf0fa6262a27b923aa5
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/assets/agents-md/server-global.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:49c42bd24d5eefa3ecad0ec9dca72893cc63b0a6ebfc536a47725ce7b15d7196
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/assets/agents-md/server-per-page.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:7863984526ec98627ef8d8c25a4df6b55622c649a11543f76352c0882cabcf05
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/assets/agents-md/ssr-none.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:757ccb7acaa4a5d5050f0eb508e6921f48e7e43324b5689796a8874321a00749
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/assets/agents-md/webassembly-global.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:a0cbc3e9d170f19ae9b539a2c30f501a23cc6911bbf8d4d769f335eb091233a9
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/create-blazor-project/assets/agents-md/webassembly-per-page.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:5ef5ec779a208299d5b49b7e96cb70e49a829c31937a5ca6e846f48b98b9a076
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/fetch-and-send-data
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/fetch-and-send-data/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:7af26f6f75d8f9521c9d54240f18a75d8bf5dad8d659041aeaf930b9bc42d98f
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/plan-ui-change
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/plan-ui-change/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:21e45de7424af23e26f710eea6209767c0ad5302cc53d1b7c926fa3baa5df3c4
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/support-prerendering
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/support-prerendering/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:ba0f2ed0908b1dc6fe30d04600ffd88d79bd2e693f58103fb9bd6b66126024ed
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/tunit
+  runtime: null
+  scope: project
+  owners:
+  - thomhurst/tunit/skills/tunit
+  active_owner: thomhurst/tunit/skills/tunit
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/tunit/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - thomhurst/tunit/skills/tunit
+  active_owner: thomhurst/tunit/skills/tunit
+  content_hash: sha256:ef9bda6f2e4bf459e9f40fa7b7bb0e233e59308cae064f3d181a8c9c6d0b615d
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/use-igniteui-blazor
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/use-igniteui-blazor/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:9af7a55eb7b16ba96fdf15cefefbbe394b349f290ded502206f6376e102295a7
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/use-js-interop
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: null
+- kind: project-relative
+  target: copilot
+  value: .agents/skills/use-js-interop/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - dotnet/skills/plugins/dotnet-blazor
+  active_owner: dotnet/skills/plugins/dotnet-blazor
+  content_hash: sha256:6bf1227510ef49d3a3cc30bf7a15c6c300b0df25a964aec66a8012a4f1d113c5

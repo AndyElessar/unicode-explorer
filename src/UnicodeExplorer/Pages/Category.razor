@@ -1,0 +1,54 @@
+@page "/category/{Gc}"
+@inject UnicodeDatabase Db
+@inject NavigationManager Nav
+
+@if (!GeneralCategories.IsBrowsable(Gc))
+{
+    <PageTitle>Not found · Unicode Explorer</PageTitle>
+    <div class="page">
+        <h1>Not found</h1>
+        <p>There is no General Category named “@Gc”. <a href="">See all categories on the home page</a>.</p>
+    </div>
+}
+else
+{
+    <PageTitle>@(_selected != null ? $"{_selected.Label} {_selected.Name}" : GeneralCategories.Names[Gc!]) · Unicode Explorer</PageTitle>
+    <div class="browse">
+        <section class="browse-main">
+            <div class="page-header">
+                <h1>@GeneralCategories.Names[Gc!] <span class="page-meta">(@Gc)</span></h1>
+                <span class="page-meta">@_codePoints.Count.ToString("N0") characters</span>
+            </div>
+            <CharGrid CodePoints="_codePoints" Selected="_selected?.CodePoint" Href="CellHref" />
+        </section>
+        @if (_selected != null)
+        {
+            <CharDetail Char="_selected" OnClose="CloseDetail" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string? Gc { get; set; }
+    [SupplyParameterFromQuery(Name = "c")] public string? SelectedHex { get; set; }
+
+    private string? _loadedGc;
+    private List<int> _codePoints = [];
+    private CharInfo? _selected;
+
+    protected override void OnParametersSet()
+    {
+        // Keep the same list instance while the category is unchanged, so the grid keeps its scroll position
+        if (Gc != _loadedGc)
+        {
+            _loadedGc = Gc;
+            _codePoints = GeneralCategories.IsBrowsable(Gc) ? Db.GetCodePointsInCategory(Gc!) : [];
+        }
+
+        _selected = SelectedHex != null && SearchService.TryParseCodePoint("U+" + SelectedHex, out var cp) ? Db.GetChar(cp) : null;
+    }
+
+    private string CellHref(int cp) => $"category/{Gc}?c={cp:X4}";
+
+    private void CloseDetail() => Nav.NavigateTo($"category/{Gc}");
+}

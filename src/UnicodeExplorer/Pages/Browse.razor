@@ -1,0 +1,68 @@
+@page "/block/{Slug}"
+@page "/char/{Hex}"
+@inject UnicodeDatabase Db
+@inject NavigationManager Nav
+
+@if (_block == null && _char == null)
+{
+    <PageTitle>Not found · Unicode Explorer</PageTitle>
+    <div class="page">
+        <h1>Not found</h1>
+        <p>@(Hex != null ? $"“{Hex}” is not a valid code point." : $"There is no block named “{Slug}”.")</p>
+    </div>
+}
+else
+{
+    <PageTitle>@(_char != null ? $"{_char.Label} {_char.Name}" : _block!.Name) · Unicode Explorer</PageTitle>
+    <div class="browse">
+        <section class="browse-main">
+            @if (_block != null)
+            {
+                <div class="page-header">
+                    <h1>@_block.Name</h1>
+                    <span class="page-meta">
+                        U+@_block.First.ToString("X4") – U+@_block.Last.ToString("X4") · @_codePoints.Count.ToString("N0") characters
+                    </span>
+                </div>
+                <CharGrid CodePoints="_codePoints" Selected="_char?.CodePoint" />
+            }
+            else
+            {
+                <div class="page"><p>This code point is not part of any block.</p></div>
+            }
+        </section>
+        @if (_char != null)
+        {
+            <CharDetail Char="_char" ShowNavigation OnClose="CloseDetail" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string? Slug { get; set; }
+    [Parameter] public string? Hex { get; set; }
+
+    private BlockInfo? _block;
+    private CharInfo? _char;
+    private List<int> _codePoints = [];
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        // This page serves two routes; clear the parameter the new route does not supply.
+        Slug = null;
+        Hex = null;
+        return base.SetParametersAsync(parameters);
+    }
+
+    protected override void OnParametersSet()
+    {
+        _char = Hex != null && SearchService.TryParseCodePoint("U+" + Hex, out var cp) ? Db.GetChar(cp) : null;
+        var block = Slug != null ? Db.GetBlock(Slug) : _char?.Block;
+
+        // Keep the same list instance while staying in one block, so the grid keeps its scroll position
+        if (block != _block) _codePoints = block != null ? Db.GetCodePointsInBlock(block) : [];
+        _block = block;
+    }
+
+    private void CloseDetail() => Nav.NavigateTo(_block != null ? $"block/{_block.Slug}" : "");
+}

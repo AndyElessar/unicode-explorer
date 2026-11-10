@@ -1,0 +1,56 @@
+@implements IDisposable
+@inject UnicodeDatabase Db
+@inject NavigationManager Nav
+
+<div class="block-list">
+    <input type="search" class="block-filter" placeholder="Filter blocks…" aria-label="Filter blocks"
+           @bind="_filter" @bind:event="oninput" />
+    <ul>
+        @foreach (var block in FilteredBlocks)
+        {
+            <li>
+                <a href="block/@block.Slug" class="@(block == _current ? "active" : "")"
+                   aria-current="@(block == _current ? "page" : null)">
+                    <span class="block-name">@block.Name</span>
+                    <span class="block-range">@block.First.ToString("X4")–@block.Last.ToString("X4")</span>
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private string _filter = "";
+    private BlockInfo? _current;
+
+    private IEnumerable<BlockInfo> FilteredBlocks => _filter.Trim().Length == 0
+        ? Db.Blocks
+        : Db.Blocks.Where(b => b.Name.Contains(_filter.Trim(), StringComparison.OrdinalIgnoreCase)
+                               || b.First.ToString("X4").StartsWith(_filter.Trim(), StringComparison.OrdinalIgnoreCase));
+
+    protected override void OnInitialized()
+    {
+        UpdateCurrent();
+        Nav.LocationChanged += OnLocationChanged;
+    }
+
+    /// <summary>Highlights the block of the current /block/{slug} or /char/{hex} page.</summary>
+    private void UpdateCurrent()
+    {
+        var path = Nav.ToBaseRelativePath(Nav.Uri).Split('?', '#')[0];
+        _current = path.Split('/') switch
+        {
+            ["block", var slug] => Db.GetBlock(slug),
+            ["char", var hex] when int.TryParse(hex, System.Globalization.NumberStyles.HexNumber, null, out var cp) => Db.GetBlock(cp),
+            _ => null,
+        };
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        UpdateCurrent();
+        StateHasChanged();
+    }
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+}

@@ -1,0 +1,10 @@
+<Project>
+
+  <!-- Settings shared by every project in the repository -->
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

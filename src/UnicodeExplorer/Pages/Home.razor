@@ -1,0 +1,76 @@
+﻿@page "/"
+@implements IDisposable
+@inject UnicodeDatabase Db
+@inject PreferenceService Prefs
+
+<PageTitle>Unicode Explorer</PageTitle>
+
+<div class="page">
+    <h1>Unicode Explorer</h1>
+    <p>
+        Browse and search all @Db.Blocks.Count.ToString("N0") blocks of Unicode @Db.UnicodeVersion.
+        Everything runs in your browser.
+    </p>
+
+    <SearchHelp />
+
+    @if (Prefs.Favorites.Count > 0)
+    {
+        <h2>Favorites</h2>
+        <CharList CodePoints="Prefs.Favorites" />
+    }
+
+    @if (Prefs.Recent.Count > 0)
+    {
+        <div class="section-header">
+            <h2>Recently viewed</h2>
+            <button type="button" class="copy-button" @onclick="Prefs.ClearRecent">Clear</button>
+        </div>
+        <CharList CodePoints="Prefs.Recent" />
+    }
+
+    <h2>Popular blocks</h2>
+    <ul class="popular">
+        @foreach (var slug in PopularBlocks)
+        {
+            if (Db.GetBlock(slug) is { } block)
+            {
+                <li><a href="block/@block.Slug">@block.Name</a></li>
+            }
+        }
+    </ul>
+
+    <h2>Browse by category</h2>
+    <div class="category-groups">
+        @foreach (var (key, groupName) in GeneralCategories.Groups)
+        {
+            <section>
+                <h3>@groupName</h3>
+                <ul>
+                    @foreach (var (gc, name) in GeneralCategories.Names.Where(n => n.Key[0] == key && GeneralCategories.IsBrowsable(n.Key)))
+                    {
+                        <li>
+                            <a href="category/@gc">@name</a>
+                            <span class="page-meta">@gc · @Db.CategoryCounts.GetValueOrDefault(gc).ToString("N0")</span>
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+    </div>
+</div>
+
+@code {
+    private static readonly string[] PopularBlocks =
+    [
+        "basic-latin", "latin-1-supplement", "general-punctuation", "currency-symbols", "arrows",
+        "mathematical-operators", "box-drawing", "geometric-shapes", "miscellaneous-symbols", "dingbats",
+        "cjk-symbols-and-punctuation", "emoticons", "miscellaneous-symbols-and-pictographs",
+    ];
+
+    protected override void OnInitialized() => Prefs.Changed += OnPreferencesChanged;
+
+    private void OnPreferencesChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Prefs.Changed -= OnPreferencesChanged;
+}

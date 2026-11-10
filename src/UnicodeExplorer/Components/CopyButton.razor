@@ -1,0 +1,12 @@
+@inject ClipboardService Clipboard
+
+<button type="button" class="copy-button" title="Copy @Description" aria-label="Copy @Description"
+        @onclick="() => Clipboard.CopyAsync(Text, Description)" @onclick:stopPropagation>Copy</button>
+
+@code {
+    /// <summary>The text placed on the clipboard.</summary>
+    [Parameter, EditorRequired] public string Text { get; set; } = "";
+
+    /// <summary>Describes what is copied, for the tooltip and the toast, e.g. "U+0041".</summary>
+    [Parameter, EditorRequired] public string Description { get; set; } = "";
+}

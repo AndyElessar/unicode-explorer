@@ -1,0 +1,24 @@
+@implements IDisposable
+@inject ToastService Toasts
+
+<div class="toast @(_message != null ? "visible" : "")" role="status" aria-live="polite">@_message</div>
+
+@code {
+    private string? _message;
+    private int _version;
+
+    protected override void OnInitialized() => Toasts.Shown += OnShown;
+
+    private async void OnShown(string message)
+    {
+        var version = ++_version;
+        _message = message;
+        StateHasChanged();
+        await Task.Delay(1500);
+        if (version != _version) return; // A newer toast replaced this one
+        _message = null;
+        StateHasChanged();
+    }
+
+    public void Dispose() => Toasts.Shown -= OnShown;
+}

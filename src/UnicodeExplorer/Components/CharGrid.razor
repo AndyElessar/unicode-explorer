@@ -1,0 +1,157 @@
+@implements IAsyncDisposable
+@inject UnicodeDatabase Db
+@inject IJSRuntime JS
+
+<div class="grid-scroll" @ref="_container" style="--cols: @_columns">
+    <Virtualize @ref="_list" TItem="int" Items="_rows" ItemSize="RowHeight" Context="row">
+        <div class="grid-row">
+            @for (var i = row * _columns; i < Math.Min((row + 1) * _columns, CodePoints.Count); i++)
+            {
+                var info = Db.GetChar(CodePoints[i])!;
+                var display = CharDisplay.For(info);
+                <a href="@((Href ?? DefaultHref)(info.CodePoint))" class="cell @(info.CodePoint == Selected ? "selected" : "")"
+                   aria-label="@info.Label @info.Name" title="@info.Label @info.Name"
+                   aria-current="@(info.CodePoint == Selected ? "true" : null)">
+                    <span class="glyph @(display.IsLabel ? "label" : "")">@display.Text</span>
+                    <span class="cell-code">@info.Hex</span>
+                </a>
+            }
+        </div>
+    </Virtualize>
+</div>
+
+@code {
+    private const int RowHeight = 76;  // Size hint: .grid-row height + margin in app.css
+    private const int MinCellWidth = 64;
+
+    /// <summary>Assigned code points to show, in order.</summary>
+    [Parameter, EditorRequired] public IReadOnlyList<int> CodePoints { get; set; } = [];
+
+    [Parameter] public int? Selected { get; set; }
+
+    /// <summary>Link target for a cell; defaults to the character page.</summary>
+    [Parameter] public Func<int, string>? Href { get; set; }
+
+    private static string DefaultHref(int cp) => $"char/{cp:X4}";
+
+    private ElementReference _container;
+    private Virtualize<int> _list = default!;
+    private DotNetObjectReference<CharGrid>? _self;
+    private IJSObjectReference? _observer;
+    private int _columns = 8;
+    private bool _hasWidth;
+    private List<int> _rows = [];
+    private IReadOnlyList<int>? _scrolledFor;
+
+    // Item to keep in view after the column count changes (e.g. the details panel opened and the grid got narrower)
+    private int? _anchorIndex;
+
+    protected override void OnParametersSet() => BuildRows();
+
+    private void BuildRows() =>
+        _rows = Enumerable.Range(0, (CodePoints.Count + _columns - 1) / _columns).ToList();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _self = DotNetObjectReference.Create(this);
+            try
+            {
+                _observer = await JS.InvokeAsync<IJSObjectReference>("ue.observeWidth", _container, _self);
+            }
+            catch (JSException)
+            {
+                // No ResizeObserver: keep the default column count
+                _hasWidth = true;
+            }
+        }
+
+        // When a new list is shown, scroll to the selected character (or to the top)
+        if (_hasWidth && !ReferenceEquals(_scrolledFor, CodePoints))
+        {
+            _scrolledFor = CodePoints;
+            _anchorIndex = null;
+            await ScrollToIndex(Selected is { } cp ? IndexOf(cp) : 0);
+        }
+        else if (_anchorIndex is { } anchor)
+        {
+            _anchorIndex = null;
+            await ScrollToIndex(anchor);
+        }
+    }
+
+    /// <summary>Scrolls so the row containing the item at <paramref name="index"/> is near the top (one row of context above it).</summary>
+    private async Task ScrollToIndex(int index)
+    {
+        var row = Math.Max(0, index / _columns - 1);
+        if (row > 0)
+        {
+            await _list.ScrollToItemAsync(row);
+            return;
+        }
+
+        // In .NET 11 RC3, ScrollToItemAsync(0) while the list is already at the top leaves
+        // Virtualize rendering only placeholders, so reset the scroll offset directly instead.
+        try
+        {
+            await JS.InvokeVoidAsync("ue.scrollToTop", _container);
+        }
+        catch (JSException) { }
+    }
+
+    [JSInvokable]
+    public async Task OnWidthChanged(double width)
+    {
+        var columns = Math.Max(4, (int)((width + 4) / (MinCellWidth + 4)));
+        if (columns == _columns && _hasWidth) return;
+
+        if (_hasWidth)
+        {
+            // Rows are re-chunked, so the same scroll offset would show different characters.
+            // Keep the selected character in view, or else the first visible one.
+            var selectedIndex = Selected is { } cp ? IndexOf(cp) : -1;
+            _anchorIndex = selectedIndex >= 0 ? selectedIndex : await FirstVisibleIndex();
+        }
+
+        _columns = columns;
+        _hasWidth = true;
+        BuildRows();
+        StateHasChanged();
+    }
+
+    private async Task<int> FirstVisibleIndex()
+    {
+        try
+        {
+            var scrollTop = await JS.InvokeAsync<double>("ue.getScrollTop", _container);
+            return (int)(scrollTop / RowHeight) * _columns;
+        }
+        catch (JSException)
+        {
+            return 0;
+        }
+    }
+
+    private int IndexOf(int cp)
+    {
+        var list = CodePoints as List<int> ?? CodePoints.ToList();
+        var i = list.BinarySearch(cp);
+        return i < 0 ? 0 : i;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_observer != null)
+        {
+            try
+            {
+                await _observer.InvokeVoidAsync("dispose");
+                await _observer.DisposeAsync();
+            }
+            catch (JSException) { }
+            catch (JSDisconnectedException) { }
+        }
+        _self?.Dispose();
+    }
+}

@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/UnicodeExplorer/UnicodeExplorer.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/UnicodeExplorer.E2E/UnicodeExplorer.E2E.csproj" />
+    <Project Path="tests/UnicodeExplorer.Tests/UnicodeExplorer.Tests.csproj" />
+  </Folder>
+</Solution>

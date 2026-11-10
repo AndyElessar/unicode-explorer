@@ -1,0 +1,19 @@
+name: unicode-explorer
+version: 1.0.0
+description: APM project for unicode-explorer
+author: Andy Elesser
+# Which agent platforms to deploy to.
+# Resolution order: --target flag > this field > auto-detect from filesystem.
+# Accepted values: agent-skills, antigravity, claude, codex, copilot, cursor, gemini, grok-bot, grok-build, hermes, kiro, opencode, vscode, windsurf
+targets:
+  - claude
+  - copilot
+dependencies:
+  apm:
+    - dotnet/skills/plugins/dotnet-blazor
+    - git: https://github.com/thomhurst/TUnit
+      path: skills/tunit
+      ref: v1.81.16
+  mcp: []
+includes: auto
+scripts: {}

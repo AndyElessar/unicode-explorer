@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <!-- Lets the Gateway dev server fall back to index.html for deep links such as /char/1F600 -->
+    <StaticWebAssetSpaFallbackEnabled>true</StaticWebAssetSpaFallbackEnabled>
+    <!-- No culture-specific formatting is needed; skipping ICU data reduces download size -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <!-- .NET 11 replaces the DevServer package with the Gateway host -->
+    <PackageReference Include="Microsoft.AspNetCore.Components.Gateway" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Generate wwwroot/data/unicode.txt from data/source when it is missing (see docs/SPEC.md 5.2) -->
+  <PropertyGroup>
+    <UnicodeDataFile>$(MSBuildProjectDirectory)\wwwroot\data\unicode.txt</UnicodeDataFile>
+  </PropertyGroup>
+
+  <Target Name="GenerateUnicodeData" BeforeTargets="BeforeBuild" Condition="!Exists('$(UnicodeDataFile)')">
+    <!-- Run from tools/: in a folder that contains a .csproj, "dotnet run file.cs" would run that project instead -->
+    <Exec Command="dotnet run UcdBuilder.cs" WorkingDirectory="$(MSBuildProjectDirectory)\..\..\tools" Timeout="300000" />
+    <ItemGroup>
+      <!-- The file did not exist when wwwroot was globbed, so add it explicitly -->
+      <Content Include="wwwroot\data\unicode.txt" />
+    </ItemGroup>
+  </Target>
+
+</Project>
