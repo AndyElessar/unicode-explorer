@@ -15,7 +15,7 @@ A browser tool for browsing and searching Unicode characters. It runs entirely o
 
 ## Tech Stack
 
-- .NET 11 (currently the `11.0.100-rc.3` SDK, pinned in `global.json`) and C# 15
+- .NET 11 (the `11.0.100` SDK, pinned in `global.json`) and C# 15
 - Blazor WebAssembly Standalone, with `Microsoft.AspNetCore.Components.Gateway` as the dev server
 - HTML and plain CSS (one file, `wwwroot/css/app.css`); no UI component library
 - JavaScript: one small global script, `wwwroot/js/interop.js` (`window.ue`)
@@ -78,6 +78,6 @@ E2E tests publish the app to `publish/` before running (AOT makes this take a fe
 - **WebAssembly exception handling is disabled on purpose** (`WasmEnableExceptionHandling=false`). .NET 11 defaults to the final EH proposal (exnref), which Edge's WebAssembly interpreter ("Enhance your security on the web", JIT off) doesn't support, so the app wouldn't start there. `InterpreterModeTests` covers this (it only runs for real on Edge for Windows and is skipped on the Linux CI runner); run it locally if you change runtime build settings.
 - **AOT compilation (`RunAOTCompilation`) only applies to `dotnet publish`.** The dev server and `dotnet build` still run on the IL interpreter, so measure startup performance against a publish output. AOT roughly halves startup in Edge's WebAssembly interpreter (see `docs/SPEC.md` 6.1). When comparing WebAssembly build settings (e.g. `-p:WasmEnableSIMD=...`), delete `src/UnicodeExplorer/obj/` first: AOT output cached there may be reused, so the comparison measures the wrong build.
 - **Do not set `overflow-anchor: none`** on scroll containers. .NET 11's `Virtualize` relies on native scroll anchoring.
-- **.NET 11 RC3 bug**: calling `Virtualize.ScrollToItemAsync(0)` while the list is already at the top renders only placeholders. `CharGrid` resets `scrollTop` through JS for row 0 instead. Re-check this after moving to the GA release.
+- **.NET 11 `Virtualize` bug (found in RC3, still present in 11.0.0)**: calling `Virtualize.ScrollToItemAsync(0)` while the list is already at the top renders only placeholders. `CharGrid` resets `scrollTop` through JS for row 0 instead. `ScrollTests.Switching_lists_while_at_the_top_renders_cells` covers it; to re-check on a newer release, always call `ScrollToItemAsync` in `CharGrid.ScrollToIndex` and run the E2E tests.
 - `/block/{slug}` and `/char/{hex}` share one page component (`Browse`), so the grid keeps its scroll position when moving between characters. A component that serves two routes must clear the parameter that the new route does not supply (see `SetParametersAsync` in `Browse.razor`).
 - Deep links on GitHub Pages are served through `404.html`, so the document's HTTP status is 404 even though the page works.

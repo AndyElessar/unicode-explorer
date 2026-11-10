@@ -34,7 +34,7 @@ Preferences are stored in your browser's `localStorage`; the app also works when
 
 Requirements:
 
-- The .NET SDK version pinned in [`global.json`](global.json) (currently .NET 11 RC 3)
+- The .NET SDK version pinned in [`global.json`](global.json) (currently .NET 11, SDK 11.0.100)
 - The `wasm-tools` workload, because the app relinks the WebAssembly runtime and is AOT-compiled on publish:
 
   ```powershell

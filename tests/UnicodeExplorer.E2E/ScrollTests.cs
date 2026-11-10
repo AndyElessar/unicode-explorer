@@ -69,6 +69,25 @@ public class ScrollTests : AppTest
         await Expect(Page.Locator(".cell.selected")).ToBeInViewportAsync();
     }
 
+    [Test]
+    public async Task Switching_lists_while_at_the_top_renders_cells()
+    {
+        // Scrolling a grid that is already at the top back to row 0 must not leave only placeholders
+        await OpenAsync("block/basic-latin");
+        await Expect(Cells.First).ToBeInViewportAsync();
+        await Assert.That(await ScrollTopAsync()).IsEqualTo(0);
+
+        await Page.Locator(".block-list a", new() { HasText = "Arrows" }).First.ClickAsync();
+        await Expect(Page.Locator(".page-header h1")).ToHaveTextAsync("Arrows");
+        await Expect(Page.Locator(".cell[href='char/2190']")).ToBeInViewportAsync();
+
+        // A character in the first row of another block also scrolls to row 0
+        await Page.EvaluateAsync("Blazor.navigateTo('char/2201')");
+        await Expect(Page.Locator(".page-header h1")).ToHaveTextAsync("Mathematical Operators");
+        await Expect(Page.Locator(".cell[href='char/2200']")).ToBeInViewportAsync();
+        await Expect(Page.Locator(".cell.selected")).ToHaveAttributeAsync("href", "char/2201");
+    }
+
     // Playwright deserializes evaluate results into types with a parameterless constructor and settable properties
     public sealed class CellTarget
     {

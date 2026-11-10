@@ -91,8 +91,8 @@
             return;
         }
 
-        // In .NET 11 RC3, ScrollToItemAsync(0) while the list is already at the top leaves
-        // Virtualize rendering only placeholders, so reset the scroll offset directly instead.
+        // In .NET 11 (found in RC3, still present in 11.0.0), ScrollToItemAsync(0) while the list is
+        // already at the top leaves Virtualize rendering only placeholders, so reset the scroll offset directly instead.
         try
         {
             await JS.InvokeVoidAsync("ue.scrollToTop", _container);

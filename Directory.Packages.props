@@ -3,8 +3,8 @@
   <!-- Central package management: versions live here, projects reference packages without a version -->
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <!-- .NET 11 release candidate; must match the SDK pinned in global.json -->
-    <AspNetCoreVersion>11.0.0-rc.3.26522.148</AspNetCoreVersion>
+    <!-- Must match the SDK pinned in global.json -->
+    <AspNetCoreVersion>11.0.0</AspNetCoreVersion>
   </PropertyGroup>
 
   <ItemGroup>

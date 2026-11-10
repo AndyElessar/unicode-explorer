@@ -1,6 +1,6 @@
 # Unicode Explorer Specification
 
-> Status: v0.5 — on .NET 11 (RC3) · Last updated: 2026-11-11
+> Status: v0.5 — on .NET 11 (GA) · Last updated: 2026-11-11
 
 ## 1. Overview
 
@@ -269,7 +269,7 @@ AC00;HANGUL SYLLABLE GA;Lo;;;;;
 
 | Item | Choice | Rationale |
 |---|---|---|
-| Framework | **Blazor WebAssembly Standalone** (.NET 11, C# 15; currently the 11.0.0-rc.3 release candidate) | Fully client-side, publishes to static files. Switch to the GA SDK and packages (11.0.100 / 11.0.0) by changing `global.json` and `AspNetCoreVersion` in `Directory.Packages.props` |
+| Framework | **Blazor WebAssembly Standalone** (.NET 11, C# 15; SDK 11.0.100, packages 11.0.0) | Fully client-side, publishes to static files. To move to a newer SDK, change `global.json` and `AspNetCoreVersion` in `Directory.Packages.props` together |
 | Data preprocessing | .NET 11 file-based app | Same language as the app, no extra toolchain |
 | Styling | One plain CSS file (`wwwroot/css/app.css`) with color tokens; dark tokens apply when the system is dark (unless `data-theme="light"`) or when `data-theme="dark"` is set on `<html>` | Simple, no extra dependencies |
 | UI component library | None | Requirements are simple; avoids extra download size |
@@ -325,7 +325,7 @@ unicode-explorer/
 ├─ tests/
 │  ├─ UnicodeExplorer.Tests/  # Unit tests (TUnit)
 │  └─ UnicodeExplorer.E2E/    # End-to-end browser tests (TUnit + Playwright)
-├─ global.json                # Pins the .NET 11 SDK (RC3, allowPrerelease) and the Microsoft.Testing.Platform test runner
+├─ global.json                # Pins the .NET 11 SDK (11.0.100) and the Microsoft.Testing.Platform test runner
 ├─ Directory.Build.props      # Shared settings: TargetFramework, Nullable, ImplicitUsings
 ├─ Directory.Packages.props   # Central package versions; AspNetCoreVersion must match the SDK
 └─ .github/workflows/deploy.yml
@@ -350,7 +350,7 @@ The data file is downloaded and parsed in `Program.cs` before the app starts, so
 Virtualized lists (`CharGrid`, search results) follow these rules learned during testing:
 
 - Do **not** set `overflow-anchor: none` on the scroll containers. .NET 11's `Virtualize` relies on native CSS scroll anchoring. (On .NET 10 that property was needed to stop runaway scrolling; on .NET 11 scrolling is stable without it.)
-- `CharGrid` scrolls with `Virtualize.ScrollToItemAsync`, except for row 0: in 11.0 RC3, `ScrollToItemAsync(0)` while the list is already at the top leaves only placeholders rendered, so the grid resets `scrollTop` through JS instead.
+- `CharGrid` scrolls with `Virtualize.ScrollToItemAsync`, except for row 0: in .NET 11 (found in RC3, still present in 11.0.0), `ScrollToItemAsync(0)` while the list is already at the top leaves only placeholders rendered, so the grid resets `scrollTop` through JS instead.
 - `CharGrid` chunks code points into rows by the current column count. When the width changes (for example, the details panel opens), it re-scrolls so the selected character, or else the first visible one, stays in view.
 
 `/block/{slug}` and `/char/{hex}` are served by the same page component (`Browse`). Moving between characters of the same block therefore keeps the same grid instance and its scroll position. Opening a `/char/{hex}` link directly scrolls the grid to that character.
@@ -406,7 +406,7 @@ public sealed record CharInfo(int CodePoint, string Name, string Category, Block
 `.github/workflows/deploy.yml` runs on pushes to `main`, on pull requests, and manually (`workflow_dispatch`). Pull requests run the build and all tests but skip steps 7–9, so dependency updates are verified before they are merged. The workflow token is read-only; only the deploy job gets `pages: write` and `id-token: write`.
 
 1. `actions/checkout@v7`
-2. `actions/setup-dotnet@v6` (installs the exact prerelease SDK pinned in `global.json`)
+2. `actions/setup-dotnet@v6` (installs the SDK pinned in `global.json`)
 3. `dotnet workload install wasm-tools`, then `dotnet run UcdBuilder.cs` in `tools/` (generate data; fails the build if validation fails)
 4. `dotnet publish src/UnicodeExplorer -c Release -o publish`
 5. `dotnet build`, then `playwright.ps1 install --with-deps chromium` from the E2E project's output (plus `msedge` when Edge is not preinstalled)
