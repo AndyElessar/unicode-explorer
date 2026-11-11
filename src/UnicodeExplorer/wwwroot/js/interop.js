@@ -22,8 +22,22 @@ window.ue = (() => {
         else delete document.documentElement.dataset.theme;
     }
 
+    // Edge's "Enhance your security on the web" turns off the JIT and runs WebAssembly in a much
+    // slower interpreter. Unlike the JIT, that interpreter can't validate this tiny module using
+    // exnref (try_table), which tells the two apart. Elements with .edge-security-note then
+    // suggest turning the mode off for this site (see app.css).
+    function inEdgeEnhancedSecurity() {
+        try {
+            const exnrefModule = new Uint8Array([0,97,115,109,1,0,0,0,1,4,1,96,0,0,3,2,1,0,10,8,1,6,0,31,64,0,11,11]);
+            return /\bEdg\//.test(navigator.userAgent) && !WebAssembly.validate(exnrefModule);
+        } catch {
+            return false;
+        }
+    }
+
     applyFont(storageGet(FONT_KEY));
     applyTheme(storageGet(THEME_KEY));
+    if (inEdgeEnhancedSecurity()) document.documentElement.dataset.edgeEnhancedSecurity = "";
 
     return {
         load: key => storageGet(key),

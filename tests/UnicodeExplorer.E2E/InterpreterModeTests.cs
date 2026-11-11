@@ -30,6 +30,15 @@ public class InterpreterModeTests() : AppTest(new BrowserTypeLaunchOptions
         await Expect(Page.Locator(".result-name").First).ToHaveTextAsync("SNOWMAN");
     }
 
+    [Test]
+    public async Task Footer_suggests_turning_off_enhanced_security()
+    {
+        await OpenAsync();
+        await SkipUnlessInterpreterLacksExnrefAsync();
+
+        await Expect(Page.Locator(".app-footer .edge-security-note")).ToBeVisibleAsync();
+    }
+
     /// <summary>A tiny module using try_table only validates when the engine supports exnref.</summary>
     private async Task SkipUnlessInterpreterLacksExnrefAsync()
     {

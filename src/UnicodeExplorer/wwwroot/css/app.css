@@ -510,3 +510,16 @@ dl.props dd {
 }
 
 .loading-progress-text:after { content: var(--blazor-load-percentage-text, "Loading"); }
+
+/* Advice for Edge's enhanced security mode (WebAssembly interpreter), detected in interop.js */
+.edge-security-note { display: none; margin: 4px 0 0; }
+:root[data-edge-enhanced-security] .edge-security-note { display: block; }
+
+.loading-note {
+    position: absolute;
+    inset: calc(20vh + 10rem) 16px auto 16px;
+    max-width: 32rem;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--muted);
+}

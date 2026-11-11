@@ -26,6 +26,8 @@ public class BrowseTests : AppTest
         await Expect(Page.Locator(".popular a", new() { HasText = "Basic Latin" })).ToBeVisibleAsync();
         await Expect(Page.Locator(".category-groups a", new() { HasText = "Math Symbol" })).ToBeVisibleAsync();
         await Expect(Page.Locator(".app-footer")).ToContainTextAsync("Unicode 18.0.0");
+        // Only for Edge's enhanced security mode (see InterpreterModeTests)
+        await Expect(Page.Locator(".edge-security-note").First).ToBeHiddenAsync();
     }
 
     [Test]
