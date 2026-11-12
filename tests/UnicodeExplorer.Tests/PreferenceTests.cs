@@ -89,6 +89,20 @@ public class CategoryTests
         await Assert.That(GeneralCategories.IsBrowsable(code)).IsEqualTo(expected);
 
     [Test]
+    [Arguments("Lo")]
+    [Arguments("Co")]
+    [Arguments("Lu")]
+    public async Task Real_data_category_lists_are_sorted_and_complete(string category)
+    {
+        var db = TestData.RealDb();
+        var codePoints = db.GetCodePointsInCategory(category);
+
+        await Assert.That(codePoints.Count).IsEqualTo(db.CategoryCounts[category]);
+        await Assert.That(codePoints.Zip(codePoints.Skip(1)).All(p => p.First < p.Second)).IsTrue();
+        await Assert.That(codePoints.All(cp => db.GetChar(cp)!.Category == category)).IsTrue();
+    }
+
+    [Test]
     public async Task Real_data_category_counts_match_assigned_total()
     {
         var counts = TestData.RealDb().CategoryCounts;

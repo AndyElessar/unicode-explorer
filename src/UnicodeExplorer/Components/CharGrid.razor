@@ -3,7 +3,9 @@
 @inject IJSRuntime JS
 
 <div class="grid-scroll" @ref="_container" style="--cols: @_columns">
-    <Virtualize @ref="_list" TItem="int" Items="_rows" ItemSize="RowHeight" Context="row">
+    @* .NET 11 raised the default OverscanCount from 3 to 15 rows; each row holds a dozen or more glyphs,
+       so that rendered ~4x the visible cells and made layout (font fallback) slow. Rows have a fixed height. *@
+    <Virtualize @ref="_list" TItem="int" Items="_rows" ItemSize="RowHeight" OverscanCount="3" Context="row">
         <div class="grid-row">
             @for (var i = row * _columns; i < Math.Min((row + 1) * _columns, CodePoints.Count); i++)
             {

@@ -350,6 +350,7 @@ The data file is downloaded and parsed in `Program.cs` before the app starts, so
 Virtualized lists (`CharGrid`, search results) follow these rules learned during testing:
 
 - Do **not** set `overflow-anchor: none` on the scroll containers. .NET 11's `Virtualize` relies on native CSS scroll anchoring. (On .NET 10 that property was needed to stop runaway scrolling; on .NET 11 scrolling is stable without it.)
+- `CharGrid` sets `OverscanCount="3"`. .NET 11 raised the default from 3 to 15, which rendered about four times the visible cells (e.g. 42 rows × 16 cells for 10 visible rows). Browser layout of glyphs from many scripts (font fallback) dominates the time to show a large category such as Other Letter, so this roughly halves it.
 - `CharGrid` scrolls with `Virtualize.ScrollToItemAsync`, except for row 0: in .NET 11 (found in RC3, still present in 11.0.0), `ScrollToItemAsync(0)` while the list is already at the top leaves only placeholders rendered, so the grid resets `scrollTop` through JS instead.
 - `CharGrid` chunks code points into rows by the current column count. When the width changes (for example, the details panel opens), it re-scrolls so the selected character, or else the first visible one, stays in view.
 

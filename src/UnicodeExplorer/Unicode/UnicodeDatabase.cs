@@ -86,10 +86,18 @@ public sealed class UnicodeDatabase
     /// <summary>All code points with the given General Category, in order.</summary>
     public List<int> GetCodePointsInCategory(string category)
     {
-        var result = Chars.Where(c => c.Category == category).Select(c => c.CodePoint).ToList();
-        foreach (var range in Ranges.Where(r => r.Category == category))
+        // Chars and Ranges are both sorted, so merge them instead of sorting (Other Letter has ~140,000 code points)
+        List<int> result = [with(capacity: CategoryCounts.GetValueOrDefault(category))];
+        var i = 0;
+        foreach (var range in Ranges.Where(r => r.Category == category)
+                     .Append(new CharRange(int.MaxValue, int.MaxValue, "", null)))
+        {
+            // Listed characters before this range
+            for (; i < Chars.Count && Chars[i].CodePoint < range.First; i++)
+                if (Chars[i].Category == category) result.Add(Chars[i].CodePoint);
+            if (range.First == int.MaxValue) break;
             for (var cp = range.First; cp <= range.Last; cp++) result.Add(cp);
-        result.Sort();
+        }
         return result;
     }
 
